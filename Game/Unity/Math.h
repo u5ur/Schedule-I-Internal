@@ -2,6 +2,8 @@
 #include <math.h>
 #include <cmath>
 
+#define PI 3.14159265358979323846
+
 struct Vector2
 {
 	float x, y;

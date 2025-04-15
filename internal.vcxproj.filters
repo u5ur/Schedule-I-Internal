@@ -15,60 +15,72 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Unity\Math.h">
+    <ClInclude Include="Game\Unity\Math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Memory.h">
+    <ClInclude Include="Game\Memory\Memory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Memory\Input.h">
+    <ClInclude Include="Game\Memory\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="il2cpp\il2cpp.h">
+    <ClInclude Include="Game\il2cpp\il2cpp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hooks\Hooks.h">
+    <ClInclude Include="Game\Hooks\Hooks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\Unity.h">
+    <ClInclude Include="Game\Unity\Unity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\Methods.h">
+    <ClInclude Include="Game\Unity\Methods.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\Structs.h">
+    <ClInclude Include="Game\Unity\Structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\Enums.h">
+    <ClInclude Include="Game\Unity\Enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Unity\Bundles.h">
+    <ClInclude Include="Game\Unity\Bundles.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Render.h">
+    <ClInclude Include="Game\Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sdk.h">
+    <ClInclude Include="Game\Sdk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
+    <ClInclude Include="Game\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Memory\Memory.cpp">
+    <ClCompile Include="Game\Memory\Memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Memory\Input.cpp">
+    <ClCompile Include="Game\Memory\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="il2cpp\il2cpp.cpp">
+    <ClCompile Include="Game\il2cpp\il2cpp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Unity\Unity.cpp">
+    <ClCompile Include="Game\Unity\Unity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Render.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Helper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Menu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -4,6 +4,7 @@
 
 #define USE_ASSETBUNDLE false
 
+
 /// How to use custom chams ///
 // ~ General Use
 // Go to Materials folder and get the .asset files
@@ -17,3 +18,13 @@
 // Load the asset from its bundle path
 // LoadAsset(YourLoadedBundle, Unity::String::New("pathto/your.mat"), il2cpp::TypeGetObject(NameSpace, ClassName))
 ///
+
+namespace Settings
+{
+	namespace Visuals
+	{
+		inline bool bSkeleton = true;
+		inline bool bChams = true;
+		inline bool bCustomSky = true;
+	}
+}

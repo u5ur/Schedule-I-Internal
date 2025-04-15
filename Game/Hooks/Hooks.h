@@ -20,14 +20,14 @@ namespace Hooks
 		}
 	}; static Hook* hook = new Hook;
 
-	void InitOnGUI(void* func)
+	static void InitOnGUI(void* func)
 	{
 		hook->HookCPP(func, "OnGUI", "AstarPath", "", 0);
 	}
 
-	void (*OrigUpdateVisuals)(uintptr_t*);
+	inline void (*OrigUpdateVisuals)(uintptr_t*);
 
-	void InitUpdateVisuals(void* func)
+	static void InitUpdateVisuals(void* func)
 	{
 		OrigUpdateVisuals = reinterpret_cast<void(*)(uintptr_t*)>(mem.GameAssembly + 0x6D2A10);
 		(void(*)(uintptr_t*))hook->HookCPP(func, ("UpdateVisuals"), ("EnvironmentFX"), ("ScheduleOne.FX"), 0);

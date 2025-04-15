@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\Memory;$(SolutionDir)\il2cpp;$(SolutionDir)\Hooks;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\Game\Memory;$(SolutionDir)\Game\il2cpp;$(SolutionDir)\Game\Hooks;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -132,26 +132,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Hooks\Hooks.h" />
-    <ClInclude Include="il2cpp\il2cpp.h" />
-    <ClInclude Include="Memory\Memory.h" />
-    <ClInclude Include="Memory\Input.h" />
-    <ClInclude Include="Render.h" />
-    <ClInclude Include="Sdk.h" />
-    <ClInclude Include="Settings.h" />
-    <ClInclude Include="Unity\Bundles.h" />
-    <ClInclude Include="Unity\Enums.h" />
-    <ClInclude Include="Unity\Math.h" />
-    <ClInclude Include="Unity\Methods.h" />
-    <ClInclude Include="Unity\Structs.h" />
-    <ClInclude Include="Unity\Unity.h" />
+    <ClInclude Include="Game\Hooks\Hooks.h" />
+    <ClInclude Include="Game\il2cpp\il2cpp.h" />
+    <ClInclude Include="Game\Memory\Memory.h" />
+    <ClInclude Include="Game\Memory\Input.h" />
+    <ClInclude Include="Game\Render.h" />
+    <ClInclude Include="Game\Sdk.h" />
+    <ClInclude Include="Game\Settings.h" />
+    <ClInclude Include="Game\Unity\Bundles.h" />
+    <ClInclude Include="Game\Unity\Enums.h" />
+    <ClInclude Include="Game\Unity\Math.h" />
+    <ClInclude Include="Game\Unity\Methods.h" />
+    <ClInclude Include="Game\Unity\Structs.h" />
+    <ClInclude Include="Game\Unity\Unity.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="il2cpp\il2cpp.cpp" />
+    <ClCompile Include="Game\Helper.cpp" />
+    <ClCompile Include="Game\il2cpp\il2cpp.cpp" />
+    <ClCompile Include="Game\UI.cpp" />
+    <ClCompile Include="Game\Menu.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Memory\Memory.cpp" />
-    <ClCompile Include="Memory\Input.cpp" />
-    <ClCompile Include="Unity\Unity.cpp" />
+    <ClCompile Include="Game\Memory\Memory.cpp" />
+    <ClCompile Include="Game\Memory\Input.cpp" />
+    <ClCompile Include="Game\Render.cpp" />
+    <ClCompile Include="Game\Unity\Unity.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

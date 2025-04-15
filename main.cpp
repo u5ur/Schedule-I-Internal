@@ -1,5 +1,5 @@
 #include <fstream>
-#include "Render.h"
+#include "Game/Render.h"
 
 HANDLE g_ConsoleHandle = NULL;
 FILE* g_ConsoleOutput = NULL;
@@ -7,9 +7,11 @@ FILE* g_ConsoleOutput = NULL;
 bool Init()
 {
 
+#if DEBUG
 	g_ConsoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	AllocConsole();
 	freopen_s(&g_ConsoleOutput, "CONOUT$", "w", stdout);
+#endif
 
 	bool Result;
 
@@ -35,8 +37,8 @@ bool Init()
 
 	il2cpp::Init();
 	Unity::Methods::Init();
-	Hooks::InitOnGUI((void*)render->OnGUI);
-	Hooks::InitUpdateVisuals((void*)render->UpdateSky);
+	Hooks::InitOnGUI((void*)Render::OnGUI);
+	Hooks::InitUpdateVisuals((void*)Render::UpdateSky);
 
 	return Result;
 }
