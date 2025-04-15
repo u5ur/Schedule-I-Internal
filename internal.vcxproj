@@ -138,6 +138,7 @@
     <ClInclude Include="Memory\Input.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Sdk.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="Unity\Bundles.h" />
     <ClInclude Include="Unity\Enums.h" />
     <ClInclude Include="Unity\Math.h" />

@@ -1,69 +1,6 @@
 #pragma once
+#include "Settings.h"
 #include "Unity/Unity.h"
-
-namespace Funly
-{
-	namespace SkyStudio
-	{
-
-		class SkyMaterialController
-		{
-		public:
-
-			// No Static Fields
-
-			void SetSkyColor(Unity::Color color)
-			{
-				if (!this) return;
-				auto set_SkyColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_SkyColor", 0, "", "Funly.SkyStudio")));
-				set_SkyColor(this, color);
-			}
-
-			void SetMiddleSkyColor(Unity::Color color)
-			{
-				if (!this) return;
-				auto set_SkyMiddleColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_SkyMiddleColor", 0, "", "Funly.SkyStudio")));
-				set_SkyMiddleColor(this, color);
-			}
-
-			void SetHorizonSkyColor(Unity::Color color)
-			{
-				if (!this) return;
-				auto set_HorizonColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_HorizonColor", 0, "", "Funly.SkyStudio")));
-				set_HorizonColor(this, color);
-			}
-		};
-
-
-		class TimeOfDayController
-		{
-		public:
-
-			 // Static Fields //
-			//------------------//
-
-			static TimeOfDayController* GetTimeOfDayController()
-			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58528016);
-				if (!TypeInfo) return nullptr;
-
-				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xB8);
-				if (!StaticFields) return nullptr;
-
-				return mem.Read<TimeOfDayController*>(StaticFields + 0x0);
-			}
-
-			 // Fields //
-			//-----------//
-
-			SkyMaterialController* GetSkyMaterialController()
-			{
-				if (!mem.IsValidPtr(this)) return nullptr;
-				return mem.Read<SkyMaterialController*>(this + 0x30);
-			}
-		};
-	}
-}
 
 namespace ScheduleOne
 {
@@ -77,10 +14,10 @@ namespace ScheduleOne
 
 				// No Static Fields
 
-				Unity::List<Unity::Transform*>* GetTransforms()
+				Unity::Array<Unity::Transform*>* GetTransforms()
 				{
 					if (!mem.IsValidPtr(this)) return nullptr;
-					return mem.Read<Unity::List<Unity::Transform*>*>(this + 0x48);
+					return mem.Read<Unity::Array<Unity::Transform*>*>(this + 0x48);
 				}
 
 				Vector3 GetBonePos(int idx)
@@ -110,10 +47,10 @@ namespace ScheduleOne
 				return mem.Read<AvatarFramework::Animation::AvatarAnimation*>(this + 0x20);
 			}
 
-			Unity::List<Unity::Renderer*>* GetRenderers()
+			Unity::Array<Unity::Renderer*>* GetRenderers()
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
-				return mem.Read<Unity::List<Unity::Renderer*>*>(this + 0x30);
+				return mem.Read<Unity::Array<Unity::Renderer*>*>(this + 0x30);
 			}
 
 			void SetChams(Unity::Shader* shader, Unity::Color color)
@@ -130,9 +67,17 @@ namespace ScheduleOne
 				{
 					auto Renderer = Renderers->Get(i);
 					auto material = Renderer->GetMaterial();
+
+				#if USE_ASSETBUNDLE
+					Unity::Bundles::HologramMaterial->SetShader(Unity::Bundles::HologramShader);
+					Unity::Bundles::HologramMaterial->SetColor(L"_Color", { 1, 0, 0, 1 });
+					Renderer->SetMaterial(Unity::Bundles::HologramMaterial);
+				#else
 					material->SetShader(shader);
-					material->SetColor((L"_Color"), color);
-					material->SetInt((L"_ZTest"), 8);
+					material->SetColor(L"_Color", color);
+					material->SetInt(L"_ZTest", 8);
+				#endif
+
 				}
 			}
 		};
@@ -308,6 +253,13 @@ namespace ScheduleOne
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::String*>(this + 0x1F0);
 			}
+
+
+			Unity::Array<ItemFramework::ItemSlot*>* GetItemSlots()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Array<ItemFramework::ItemSlot*>*>(this + 0x2A0);
+			}
 		};
 	}
 
@@ -331,4 +283,84 @@ namespace ScheduleOne
 		L_Hip = 34,
 		Spine4 = 37
 	};
+}
+
+namespace Funly
+{
+	namespace SkyStudio
+	{
+
+		class SkyMaterialController
+		{
+		public:
+
+			// No Static Fields
+
+			void SetSkyColor(Unity::Color color)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				auto set_SkyColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_SkyColor", 0, "", "Funly.SkyStudio")));
+				set_SkyColor(this, color);
+			}
+
+			void SetMiddleSkyColor(Unity::Color color)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				auto set_SkyMiddleColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_SkyMiddleColor", 0, "", "Funly.SkyStudio")));
+				set_SkyMiddleColor(this, color);
+			}
+
+			void SetHorizonSkyColor(Unity::Color color)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				auto set_HorizonColor = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Color)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_HorizonColor", 0, "", "Funly.SkyStudio")));
+				set_HorizonColor(this, color);
+			}
+
+			void SetSkyboxMaterial(Unity::Color color)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				auto set_SkyboxMaterial = reinterpret_cast<void(*)(Funly::SkyStudio::SkyMaterialController*, Unity::Material*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "set_SkyboxMaterial", 0, "", "Funly.SkyStudio")));
+				auto get_SkyboxMaterial = reinterpret_cast<Unity::Material * (*)(Funly::SkyStudio::SkyMaterialController*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SkyMaterialController", "get_SkyboxMaterial", 0, "", "Funly.SkyStudio")));
+
+				auto material = get_SkyboxMaterial(this);
+				auto shader = material->GetShader();
+				if (shader != Unity::Bundles::StarNestShader)
+				{
+					Unity::Bundles::StarNestMaterial->SetShader(Unity::Bundles::StarNestShader);
+					Unity::Bundles::StarNestMaterial->SetColor((L"_Color"), color);
+					set_SkyboxMaterial(this, Unity::Bundles::StarNestMaterial);
+				}
+			}
+		};
+
+
+		class TimeOfDayController
+		{
+		public:
+
+			// Static Fields //
+		   //------------------//
+
+			static TimeOfDayController* GetTimeOfDayController()
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58528016);
+				if (!TypeInfo) return nullptr;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xB8);
+				if (!StaticFields) return nullptr;
+
+				return mem.Read<TimeOfDayController*>(StaticFields + 0x0);
+			}
+
+			// Fields //
+		   //-----------//
+
+			SkyMaterialController* GetSkyMaterialController()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<SkyMaterialController*>(this + 0x30);
+			}
+		};
+	}
 }

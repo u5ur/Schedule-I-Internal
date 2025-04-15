@@ -130,7 +130,7 @@ public:
 };
 
 template<typename T>
-struct List
+struct Array
 {
 	T Get(uint32_t idx)
 	{
@@ -138,7 +138,14 @@ struct List
 		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));
 	}
 
-	T GetValue(uint32_t idx) {
+	T operator[](uint32_t idx) { return Get(idx); }
+	const uint32_t GetSize() { return *reinterpret_cast<uint32_t*>((uintptr_t)this + 0x18); }
+};
+
+template<typename T>
+struct List
+{
+	T Get(uint32_t idx) {
 		const auto list = *reinterpret_cast<uintptr_t*>((uintptr_t)this + 0x10);
 		const auto internal_list = list + 0x20;
 		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));

@@ -90,12 +90,16 @@ public:
 			auto TimeOfDayController = Funly::SkyStudio::TimeOfDayController::GetTimeOfDayController();
 			if (!mem.IsValidPtr(TimeOfDayController)) return;
 
-			auto SkyController =TimeOfDayController->GetSkyMaterialController();
+			auto SkyController = TimeOfDayController->GetSkyMaterialController();
 			if (!mem.IsValidPtr(SkyController)) return;
 
+#if USE_ASSETBUNDLE
+			SkyController->SetSkyboxMaterial(Unity::Color(0.0f, 0.0f, 0.3f, 1.0f));
+#else
 			SkyController->SetSkyColor(Unity::Color(1.0f, 0.7f, 0.9f, 1.0f));
 			SkyController->SetMiddleSkyColor(Unity::Color(0.9f, 0.4f, 0.7f, 1.0f));
 			SkyController->SetHorizonSkyColor(Unity::Color(0.4f, 0.1f, 0.5f, 1.0f));
+#endif
 		}
 	}
 
@@ -110,6 +114,7 @@ public:
 		if (!HasInit)
 		{
 			if (Init()) HasInit = true;
+			return;
 		}
 
 		auto Camera = Unity::Camera::GetMain();
@@ -126,7 +131,7 @@ public:
 
 		for (int i = 0; i < Size; i++)
 		{
-			auto NPC = NPCRegistry->GetValue(i);
+			auto NPC = NPCRegistry->Get(i);
 			if (!mem.IsValidPtr(NPC)) continue;
 
 			if (!NPC->IsVisible()) continue;
@@ -155,6 +160,10 @@ public:
 
 		Unity::GUISkin::label = mem.Read<Unity::GUIStyle*>(skin + 0x38);
 		if (!mem.IsValidPtr(Unity::GUISkin::label)) return false;
+
+#if USE_ASSETBUNDLE
+		Unity::Bundles::Init();
+#endif
 
 		Shader = Unity::Shader::Find((L"Hidden/Internal-Colored"));
 		Unity::Material::material = (Unity::Material*)il2cpp::NewObject(il2cpp::InitClass(("Material"), ("UnityEngine")));
