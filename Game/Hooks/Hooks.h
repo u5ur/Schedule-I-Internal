@@ -25,11 +25,27 @@ namespace Hooks
 		hook->HookCPP(func, "OnGUI", "AstarPath", "", 0);
 	}
 
-	inline void (*OrigUpdateVisuals)(uintptr_t*);
+	inline void (*OrigUpdateVisuals)(uint64_t);
 
 	static void InitUpdateVisuals(void* func)
 	{
-		OrigUpdateVisuals = reinterpret_cast<void(*)(uintptr_t*)>(mem.GameAssembly + 0x6D2A10);
-		(void(*)(uintptr_t*))hook->HookCPP(func, ("UpdateVisuals"), ("EnvironmentFX"), ("ScheduleOne.FX"), 0);
+		OrigUpdateVisuals = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x6D2A10);
+		hook->HookCPP(func, ("UpdateVisuals"), ("EnvironmentFX"), ("ScheduleOne.FX"), 0);
+	}
+
+	inline void (*OrigUpdate)(uint64_t);
+
+	static void InitUpdate(void* func)
+	{
+		OrigUpdate = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x6AB230);
+		hook->HookCPP(func, ("Update"), ("PlayerCamera"), ("ScheduleOne.PlayerScripts"), 0);
+	}
+
+	inline void (*OrigUpdateWeapon)(uint64_t);
+
+	static void InitUpdateWeapon(void* func)
+	{
+		OrigUpdateWeapon = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x84C3A0);
+		hook->HookCPP(func, ("Update"), ("Equippable_RangedWeapon"), ("ScheduleOne.Equipping"), 0);
 	}
 }

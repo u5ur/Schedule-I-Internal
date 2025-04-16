@@ -26,7 +26,47 @@ bool Render::Init()
 	return true;
 }
 
-void Render::UpdateSky(uintptr_t* a1)
+void Render::UpdateCamera(uint64_t a1)
+{
+	if (Hooks::OrigUpdate)
+	{
+		Hooks::OrigUpdate(a1);
+
+		auto PlayerCamera = (ScheduleOne::PlayerScripts::PlayerCamera*)a1;
+
+		if (mem.IsValidPtr(ClosestNPC) &&
+			mem.IsValidPtr(PlayerCamera) &&
+			mem.GetInput()->bIsKeyDown(VK_RBUTTON))
+		{
+			Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
+			PlayerCamera->SetLookAt(Head3d, 0);
+		}
+	}
+}
+
+void Render::UpdateWeapon(uint64_t a1)
+{
+	if (Hooks::OrigUpdateWeapon)
+	{
+		Hooks::OrigUpdateWeapon(a1);
+
+		auto Weapon = (ScheduleOne::Equipping::Equippable_RangedWeapon*)a1;
+		if (!mem.IsValidPtr(Weapon)) return;
+
+		Weapon->SetAccuracy(1000);
+		Weapon->SetRange(1000);
+		Weapon->SetDamage(1000);
+		Weapon->SetMaxSpread(0);
+		Weapon->SetMinSpread(0);
+
+		if (mem.GetInput()->bIsKeyDown(VK_LBUTTON))
+		{
+			Weapon->Fire();
+		}
+	}
+}
+
+void Render::UpdateSky(uint64_t a1)
 {
 	if (Hooks::OrigUpdateVisuals)
 	{
@@ -67,7 +107,8 @@ void Render::RenderNPCs()
 
 	float MinScreenDistanceNpc = std::numeric_limits<float>::max();
 	float MinMeterDistanceNpc = std::numeric_limits<float>::max();
-	ScheduleOne::NPCs::NPC* ClosestNPC = nullptr;
+
+	ClosestNPC = nullptr;
 
 	for (int i = 0; i < Size; i++)
 	{
@@ -98,6 +139,7 @@ void Render::RenderNPCs()
 		float ScreenDist = std::sqrt(dx * dx + dy * dy);
 
 		if (ScreenDist <= 100 &&
+			IsVisible(Camera, Head3d) &&
 			ScreenDist < MinScreenDistanceNpc)
 		{
 			MinScreenDistanceNpc = ScreenDist;
@@ -114,40 +156,42 @@ void Render::RenderNPCs()
 		if (Settings::Visuals::bSkeleton) DrawSkeleton(NPC->GetAvatar()->GetAvatarAnimation(), Camera, Unity::Color(1, 1, 1, 1));
 	}
 
-	if (mem.IsValidPtr(ClosestNPC) && 
-		Settings::Visuals::bInventory)
+	if (mem.IsValidPtr(ClosestNPC))
 	{
-		auto ItemSlots = ClosestNPC->GetNPCInventory()->GetItemSlots();
-		if (mem.IsValidPtr(ItemSlots))
+		if (Settings::Visuals::bInventory)
 		{
-			float startX = Unity::Screen::GetWidth() / 2;
-			float startY = 30.0f;
-			float spacing = 10.0f;
-
-			auto Size = ItemSlots->GetSize();
-
-			for (int i = 0; i < Size; i++)
+			auto ItemSlots = ClosestNPC->GetNPCInventory()->GetItemSlots();
+			if (mem.IsValidPtr(ItemSlots))
 			{
-				auto ItemSlot = ItemSlots->Get(i);
-				if (!mem.IsValidPtr(ItemSlot)) continue;
+				float startX = Unity::Screen::GetWidth() / 2;
+				float startY = 30.0f;
+				float spacing = 10.0f;
 
-				auto Sprite = ItemSlot->GetItemInstance()->GetItemDefinition()->GetSprite();
-				if (!mem.IsValidPtr(Sprite)) continue;
+				auto Size = ItemSlots->GetSize();
 
-				auto Texture = Sprite->GetTexture();
-				if (!mem.IsValidPtr(Texture)) continue;
+				for (int i = 0; i < Size; i++)
+				{
+					auto ItemSlot = ItemSlots->Get(i);
+					if (!mem.IsValidPtr(ItemSlot)) continue;
 
-				auto Rect = Sprite->GetRect();
+					auto Sprite = ItemSlot->GetItemInstance()->GetItemDefinition()->GetSprite();
+					if (!mem.IsValidPtr(Sprite)) continue;
 
-				Unity::Rect DrawRect;
-				DrawRect.x = startX;
-				DrawRect.y = startY;
-				DrawRect.width = Rect.width / 7;
-				DrawRect.height = Rect.height / 7;
+					auto Texture = Sprite->GetTexture();
+					if (!mem.IsValidPtr(Texture)) continue;
 
-				Unity::GUI::DrawTexture(DrawRect, Texture);
+					auto Rect = Sprite->GetRect();
 
-				startX += (Rect.width / 10) + spacing;
+					Unity::Rect DrawRect;
+					DrawRect.x = startX;
+					DrawRect.y = startY;
+					DrawRect.width = Rect.width / 7;
+					DrawRect.height = Rect.height / 7;
+
+					Unity::GUI::DrawTexture(DrawRect, Texture);
+
+					startX += (Rect.width / 10) + spacing;
+				}
 			}
 		}
 	}

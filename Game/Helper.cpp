@@ -55,3 +55,10 @@ void Render::DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimati
 	UI::DrawLine(r_foot, r_toe, color);
 	UI::DrawLine(l_foot, l_toe, color);
 }
+
+bool Render::IsVisible(Unity::Camera* cam, Vector3 target_pos)
+{
+	Vector3 Direction = (target_pos - cam->Location);
+	float dist = Direction.Magnitude() * 0.9f;
+	return !Unity::Methods::Raycast(Unity::Ray(cam->Location, Direction), dist, -1, Unity::QueryTriggerInteraction::Ignore);
+}

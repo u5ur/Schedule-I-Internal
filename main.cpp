@@ -37,8 +37,12 @@ bool Init()
 
 	il2cpp::Init();
 	Unity::Methods::Init();
+	Sdk::Methods::Init();
+
 	Hooks::InitOnGUI((void*)Render::OnGUI);
 	Hooks::InitUpdateVisuals((void*)Render::UpdateSky);
+	Hooks::InitUpdate((void*)Render::UpdateCamera);
+	Hooks::InitUpdateWeapon((void*)Render::UpdateWeapon);
 
 	return Result;
 }

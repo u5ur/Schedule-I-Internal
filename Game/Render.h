@@ -19,9 +19,19 @@ namespace Render
 		void Checkbox(Unity::Rect rect, Unity::Color color, Unity::String text, bool* value);
 	}
 
+	static ScheduleOne::NPCs::NPC* ClosestNPC = nullptr;
+
 	void DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimation* anim, Unity::Camera* cam, Unity::Color color);
 
-	void UpdateSky(uintptr_t* a1);
+	bool IsVisible(Unity::Camera* cam, Vector3 target_pos);
+
+	void UpdateSky(uint64_t a1);
+
+	void UpdateCamera(uint64_t a1);
+
+	void UpdateWeapon(uint64_t a1);
+
+	void UpdateAvatarWeapon(uint64_t a1);
 
 	bool Init();
 
@@ -29,7 +39,7 @@ namespace Render
 
 	void RenderMenu();
 
-	static void OnGUI(uintptr_t* ui)
+	static void OnGUI(uint64_t ui)
 	{
 		static bool HasInit = false;
 

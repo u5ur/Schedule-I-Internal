@@ -2,6 +2,34 @@
 #include "Settings.h"
 #include "Unity/Unity.h"
 
+namespace ScheduleOne 
+{
+	namespace PlayerScripts
+	{
+		class PlayerCamera;
+	}
+
+	namespace Equipping
+	{
+		class Equippable_RangedWeapon;
+	}
+}
+
+namespace Sdk
+{
+	namespace Methods
+	{
+		inline auto Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(0);
+		inline auto LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
+
+		static void Init()
+		{
+			Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(mem.GameAssembly + 0x84A270);
+			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
+		}
+	}
+}
+
 namespace ScheduleOne
 {
 	namespace AvatarFramework
@@ -79,6 +107,49 @@ namespace ScheduleOne
 				#endif
 
 				}
+			}
+		};
+	}
+
+	namespace Equipping
+	{
+		class Equippable_RangedWeapon
+		{
+		public:
+
+			void SetMinSpread(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0xDC, value);
+			}
+
+			void SetMaxSpread(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0xE0, value);
+			}
+
+			void SetAccuracy(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0x94, value);
+			}
+
+			void SetRange(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0xD4, value);
+			}
+
+			void SetDamage(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0xE4, value);
+			}
+
+			void Fire()
+			{
+				Sdk::Methods::Fire(this);
 			}
 		};
 	}
@@ -306,6 +377,17 @@ namespace ScheduleOne
 				}
 			};
 		}
+
+		class PlayerCamera
+		{
+		public:
+
+			void SetLookAt(Vector3 pos, float duration)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::LookAt(this, pos, duration);
+			}
+		};
 
 
 		class Player
