@@ -1,3 +1,3 @@
-simple internal base for schedule I
+Internal for Schedule I
 
-has chams, custom sky and skeleton
+Aimbot, Rapid Fire, Chams, Skeleton, Custom Sky and more.
