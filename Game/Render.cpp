@@ -32,6 +32,8 @@ void Render::UpdateCamera(uint64_t a1)
 	{
 		Hooks::OrigUpdate(a1);
 
+		if (!Settings::Aimbot::bAimbot) return;
+
 		auto PlayerCamera = (ScheduleOne::PlayerScripts::PlayerCamera*)a1;
 
 		if (mem.IsValidPtr(ClosestNPC) &&
@@ -49,6 +51,8 @@ void Render::UpdateWeapon(uint64_t a1)
 	if (Hooks::OrigUpdateWeapon)
 	{
 		Hooks::OrigUpdateWeapon(a1);
+
+		if (!Settings::Aimbot::bRapidFire) return;
 
 		auto Weapon = (ScheduleOne::Equipping::Equippable_RangedWeapon*)a1;
 		if (!mem.IsValidPtr(Weapon)) return;

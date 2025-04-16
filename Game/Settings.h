@@ -21,6 +21,13 @@
 
 namespace Settings
 {
+
+	namespace Aimbot
+	{
+		inline bool bAimbot = true;
+		inline bool bRapidFire = true;
+	}
+
 	namespace Visuals
 	{
 		inline bool bSkeleton = true;
