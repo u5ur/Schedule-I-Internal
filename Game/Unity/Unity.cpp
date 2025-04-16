@@ -29,7 +29,7 @@ void Methods::Init() {
 	get_Name = reinterpret_cast<String * (*)(RuntimeFieldInfo*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("RuntimeFieldInfo", "get_Name", 0, "", "System.Reflection")));
 	get_FieldType = reinterpret_cast<Type * (*)(RuntimeFieldInfo*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("RuntimeFieldInfo", "get_FieldType", 0, "", "System.Reflection")));
 	GetFieldOffset = reinterpret_cast<int(*)(RuntimeFieldInfo*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("RuntimeFieldInfo", "GetFieldOffset", 0, "", "System.Reflection")));
-	GetComponentsInChildren = reinterpret_cast<List<uintptr_t>*(*)(Component*, Type*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Component", "GetComponentsInChildren", 0, "", "UnityEngine")));
+	GetComponentsInChildren = reinterpret_cast<Array<uintptr_t>*(*)(Component*, Type*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Component", "GetComponentsInChildren", 0, "", "UnityEngine")));
 	GetComponent = reinterpret_cast<Component * (*)(Component*, Type*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Component", "GetComponent", 0, "", "UnityEngine")));
 	get_material = reinterpret_cast<Material * (*)(Renderer*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method(("Renderer"), ("get_material"), 0, (""), ("UnityEngine"))));
 	set_material = reinterpret_cast<void(*)(Renderer*, Material*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method(("Renderer"), ("set_material"), 1, (""), ("UnityEngine"))));
@@ -174,7 +174,7 @@ Transform* Component::GetTransform() {
 	return Methods::get_transform(this);
 }
 
-List<uintptr_t>* Component::GetComponentsInChildren(Type* type) {
+Array<uintptr_t>* Component::GetComponentsInChildren(Type* type) {
 
 	if (!mem.IsValidPtr(this) || !mem.IsValidPtr(type)) return nullptr;
 	return Methods::GetComponentsInChildren(this, type);

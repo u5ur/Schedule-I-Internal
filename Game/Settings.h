@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEBUG false
+#define DEBUG true
 
 #define USE_ASSETBUNDLE false
 
@@ -25,6 +25,7 @@ namespace Settings
 	{
 		inline bool bSkeleton = true;
 		inline bool bChams = true;
+		inline bool bInventory = true;
 		inline bool bCustomSky = true;
 	}
 }

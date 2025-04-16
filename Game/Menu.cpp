@@ -19,5 +19,6 @@ void Render::RenderMenu()
 
 	UI::Checkbox({ x, y + 0, 20, 20 }, ThemeColor, L"Skeleton", &Settings::Visuals::bSkeleton);
 	UI::Checkbox({ x, y + 25, 20, 20 }, ThemeColor, L"Chams", &Settings::Visuals::bChams);
-	UI::Checkbox({ x, y + 50, 20, 20 }, ThemeColor, L"Custom Sky", &Settings::Visuals::bCustomSky);
+	UI::Checkbox({ x, y + 50, 20, 20 }, ThemeColor, L"Inventory", &Settings::Visuals::bInventory);
+	UI::Checkbox({ x, y + 75, 20, 20 }, ThemeColor, L"Custom Sky", &Settings::Visuals::bCustomSky);
 }

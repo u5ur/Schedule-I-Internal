@@ -83,6 +83,38 @@ namespace ScheduleOne
 		};
 	}
 
+	namespace Skating
+	{
+		class Skateboard
+		{
+		public:
+
+			float GetJumpForce()
+			{
+				if (!mem.IsValidPtr(this)) return 0;
+				return mem.Read<float>(this + 0x1D0);
+			}
+
+			void SetJumpForce(float force)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0x1D0, force);
+			}
+
+			float GetCurrentSpeed()
+			{
+				if (!mem.IsValidPtr(this)) return 0;
+				return mem.Read<float>(this + 0x118);
+			}
+
+			void SetCurrentSpeed(float speed)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0x118, speed);
+			}
+		};
+	}
+
 	namespace ItemFramework
 	{
 		class ItemDefinition
@@ -129,6 +161,27 @@ namespace ScheduleOne
 	namespace NPCs
 	{
 
+		
+		namespace Relation
+		{
+			class NPCRelationData
+			{
+			public:
+
+				bool IsUnlocked()
+				{
+					if (!mem.IsValidPtr(this)) return false;
+					return mem.Read<bool>(this + 0x14);
+				}
+
+				void SetUnlocked()
+				{
+					if (!mem.IsValidPtr(this)) return;
+					mem.Write<bool>(this + 0x14, true);
+				}
+			};
+		}
+
 		class NPCInventory
 		{
 		public:
@@ -137,6 +190,23 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::List<ItemFramework::ItemSlot*>*>(this + 0x158);
+			}
+		};
+
+		class NPCHealth
+		{
+		public:
+
+			float GetHealth()
+			{
+				if (!mem.IsValidPtr(this)) return 0;
+				return mem.Read<float>(this + 0x118);
+			}
+
+			float GetMaxHealth()
+			{
+				if (!mem.IsValidPtr(this)) return 0;
+				return mem.Read<float>(this + 0x128);
 			}
 		};
 
@@ -180,6 +250,18 @@ namespace ScheduleOne
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<NPCInventory*>(this + 0x1A8);
 			}
+
+			NPCHealth* GetNPCHealth()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<NPCHealth*>(this + 0x1B8);
+			}
+
+			Relation::NPCRelationData* GetRelationData()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Relation::NPCRelationData*>(this + 0x1F0);
+			}
 		};
 
 		class NPCManager
@@ -204,6 +286,28 @@ namespace ScheduleOne
 
 	namespace PlayerScripts
 	{
+
+		namespace Health
+		{
+			class PlayerHealth
+			{
+			public:
+
+				float GetHealth()
+				{
+					if (!mem.IsValidPtr(this)) return 0;
+					return mem.Read<float>(this + 0x11C);
+				}
+
+				float GetMaxHealth()
+				{
+					if (!mem.IsValidPtr(this)) return 0;
+					return 100.0f;
+				}
+			};
+		}
+
+
 		class Player
 		{
 		public:
@@ -259,6 +363,53 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::Array<ItemFramework::ItemSlot*>*>(this + 0x2A0);
+			}
+
+			Health::PlayerHealth* GetPlayerHealth()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Health::PlayerHealth*>(this + 0x178);
+			}
+
+			Skating::Skateboard* GetSkateboard()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Skating::Skateboard*>(this + 0x240);
+			}
+			
+			bool IsSkating()
+			{
+				if (!mem.IsValidPtr(this)) return false;
+				return mem.Read<bool>(this + 0x239);
+			}
+		};
+
+		class ViewmodelAvatar
+		{
+		public:
+
+			AvatarFramework::Avatar* GetAvatar()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<AvatarFramework::Avatar*>(this + 0x40);
+			}
+
+			AvatarFramework::Avatar* GetParentAvatar()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<AvatarFramework::Avatar*>(this + 0x30);
+			}
+
+			Vector3 GetBaseOffset()
+			{
+				if (!mem.IsValidPtr(this)) return {};
+				return mem.Read<Vector3>(this + 0x50);
+			}
+
+			void SetBaseOffset(Vector3 offset)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<Vector3>(this + 0x50, offset);
 			}
 		};
 	}
@@ -360,6 +511,18 @@ namespace Funly
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<SkyMaterialController*>(this + 0x30);
+			}
+
+			float GetSkyTime()
+			{
+				if (!mem.IsValidPtr(this)) return -1;
+				return mem.Read<float>(this + 0x28);
+			}
+
+			void SetSkyTime(float time)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0x28, time);
 			}
 		};
 	}

@@ -29,7 +29,7 @@ namespace Methods
 	inline auto get_Name = reinterpret_cast<String * (*)(RuntimeFieldInfo*)>(0);
 	inline auto get_FieldType = reinterpret_cast<Type * (*)(RuntimeFieldInfo*)>(0);
 	inline auto GetFieldOffset = reinterpret_cast<int(*)(RuntimeFieldInfo*)>(0);
-	inline auto GetComponentsInChildren = reinterpret_cast<List<uintptr_t>*(*)(Component*, Type*)>(0);
+	inline auto GetComponentsInChildren = reinterpret_cast<Array<uintptr_t>*(*)(Component*, Type*)>(0);
 	inline auto GetComponent = reinterpret_cast<Component * (*)(Component*, Type*)>(0);
 	inline auto get_material = reinterpret_cast<Material * (*)(Renderer*)>(0);
 	inline auto set_material = reinterpret_cast<void(*)(Renderer*, Material*)>(0);

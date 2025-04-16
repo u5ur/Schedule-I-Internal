@@ -71,7 +71,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)\Game\Memory;$(SolutionDir)\Game\il2cpp;$(SolutionDir)\Game\Hooks;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)$(ProjectName)\Game\Memory;$(SolutionDir)$(ProjectName)\Game\il2cpp;$(SolutionDir)$(ProjectName)\Game\Hooks;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Builds</OutDir>
+    <IntDir>$(SolutionDir)Builds\Bin</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

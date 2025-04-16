@@ -84,7 +84,7 @@ namespace Unity
 	class Component : public Object {
 	public:
 		Transform* GetTransform();
-		List<uintptr_t>* GetComponentsInChildren(Type* type);
+		Array<uintptr_t>* GetComponentsInChildren(Type* type);
 		Component* GetComponent(Type* type);
 	};
 
