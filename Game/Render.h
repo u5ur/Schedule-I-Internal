@@ -31,8 +31,6 @@ namespace Render
 
 	void UpdateWeapon(uint64_t a1);
 
-	void UpdateAvatarWeapon(uint64_t a1);
-
 	bool Init();
 
 	void RenderNPCs();

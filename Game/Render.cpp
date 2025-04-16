@@ -50,12 +50,14 @@ void Render::UpdateWeapon(uint64_t a1)
 {
 	if (Hooks::OrigUpdateWeapon)
 	{
-		Hooks::OrigUpdateWeapon(a1);
+		//Hooks::OrigUpdateWeapon(a1);
 
 		if (!Settings::Aimbot::bRapidFire) return;
 
 		auto Weapon = (ScheduleOne::Equipping::Equippable_RangedWeapon*)a1;
 		if (!mem.IsValidPtr(Weapon)) return;
+
+		Weapon->GetAvatarEquippable()->GetAvatar()->SetChams(Shader, Unity::Color(1, 0, 1, 1));
 
 		Weapon->SetAccuracy(1000);
 		Weapon->SetRange(1000);
@@ -67,6 +69,8 @@ void Render::UpdateWeapon(uint64_t a1)
 		{
 			Weapon->Fire();
 		}
+
+		return;
 	}
 }
 

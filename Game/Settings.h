@@ -2,7 +2,7 @@
 
 #define DEBUG true
 
-#define USE_ASSETBUNDLE false
+#define USE_ASSETBUNDLE true
 
 
 /// How to use custom chams ///

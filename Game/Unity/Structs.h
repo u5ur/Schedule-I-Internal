@@ -1,5 +1,15 @@
 #pragma once
 
+struct RaycastHit
+{
+	Vector3 m_Point;
+	Vector3 m_Normal;
+	uint8_t m_FaceID;
+	float m_Distance;
+	Vector2 m_UV;
+	int Collider;
+};
+
 struct Color
 {
 	float r;

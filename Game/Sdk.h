@@ -113,9 +113,27 @@ namespace ScheduleOne
 
 	namespace Equipping
 	{
+
+		class AvatarEquippable
+		{
+		public:
+
+			AvatarFramework::Avatar* GetAvatar()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<AvatarFramework::Avatar*>(this + 0x48);
+			}
+		};
+
 		class Equippable_RangedWeapon
 		{
 		public:
+
+			AvatarEquippable* GetAvatarEquippable()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<AvatarEquippable*>(this + 0x60);
+			}
 
 			void SetMinSpread(float value)
 			{
@@ -377,6 +395,55 @@ namespace ScheduleOne
 				}
 			};
 		}
+
+		class PlayerMovement
+		{
+		public:
+
+			static void SetWalkSpeed(float value)
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				if (!TypeInfo) return;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
+				if (!StaticFields) return;
+
+				mem.Write<float>(StaticFields + 0x0, value);
+			}
+
+			static void SetSprintMultiplier(float value)
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				if (!TypeInfo) return;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
+				if (!StaticFields) return;
+
+				mem.Write<float>(StaticFields + 0x4, value);
+			}
+
+			static void SetJumpMultiplier(float value)
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				if (!TypeInfo) return;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
+				if (!StaticFields) return;
+
+				mem.Write<float>(StaticFields + 0xC, value);
+			}
+
+			static void SetGravityMultiplier(float value)
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				if (!TypeInfo) return;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
+				if (!StaticFields) return;
+
+				mem.Write<float>(StaticFields + 0x20, value);
+			}
+		};
 
 		class PlayerCamera
 		{
