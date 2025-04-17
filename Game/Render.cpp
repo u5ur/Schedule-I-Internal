@@ -70,7 +70,7 @@ void Render::UpdateWeapon(uint64_t a1)
 {
 	if (Hooks::OrigUpdateWeapon)
 	{
-		//Hooks::OrigUpdateWeapon(a1);
+		Hooks::OrigUpdateWeapon(a1);
 
 		if (!Settings::Aimbot::bRapidFire) return;
 
@@ -116,6 +116,44 @@ void Render::UpdateSky(uint64_t a1)
 		SkyController->SetHorizonSkyColor(Unity::Color(0.4f, 0.1f, 0.5f, 1.0f));
 #endif
 
+	}
+}
+
+void Render::UpdateRTB(uint64_t a1)
+{
+	///
+	// This doesnt really work rn idk if i can get this too work
+	///
+
+	if (Hooks::OrigUpdateRTB)
+	{
+		Hooks::OrigUpdateRTB(a1);
+
+		auto RTBController = (ScheduleOne::Casino::RTBGameController*)a1;
+		if (!mem.IsValidPtr(RTBController)) return;
+
+		auto PlayingCards = RTBController->GetPlayingCards();
+		if (!mem.IsValidPtr(PlayingCards)) return;
+
+		auto pSize = PlayingCards->GetSize();
+		if (pSize <= 0 || pSize > 100) return;
+
+		for (int i = 0; i < pSize; i++)
+		{
+			auto PlayingCard = PlayingCards->Get(i);
+			if (!mem.IsValidPtr(PlayingCard)) continue;
+
+			auto CardSprite = PlayingCard->GetCardSprite();
+			if (!mem.IsValidPtr(CardSprite)) continue;
+
+			auto Sprite = CardSprite->GetSprite();
+			if (!mem.IsValidPtr(Sprite)) continue;
+
+			auto Texture = Sprite->GetTexture();
+			if (!mem.IsValidPtr(Texture)) continue;
+
+			Unity::GUI::DrawTexture({ 1920 / 2, 1080 / 2, 512, 512 }, Texture);
+		}
 	}
 }
 
@@ -184,42 +222,40 @@ void Render::RenderNPCs()
 		if (Settings::Visuals::bSkeleton) helper::DrawSkeleton(NPC->GetAvatar()->GetAvatarAnimation(), Camera, Unity::Color(1, 1, 1, 1));
 	}
 
-	if (mem.IsValidPtr(ClosestNPC))
+	if (mem.IsValidPtr(ClosestNPC) &&
+		Settings::Visuals::bInventory)
 	{
-		if (Settings::Visuals::bInventory)
+		auto ItemSlots = ClosestNPC->GetNPCInventory()->GetItemSlots();
+		if (mem.IsValidPtr(ItemSlots))
 		{
-			auto ItemSlots = ClosestNPC->GetNPCInventory()->GetItemSlots();
-			if (mem.IsValidPtr(ItemSlots))
+			float startX = Unity::Screen::GetWidth() / 2;
+			float startY = 30.0f;
+			float spacing = 10.0f;
+
+			auto Size = ItemSlots->GetSize();
+
+			for (int i = 0; i < Size; i++)
 			{
-				float startX = Unity::Screen::GetWidth() / 2;
-				float startY = 30.0f;
-				float spacing = 10.0f;
+				auto ItemSlot = ItemSlots->Get(i);
+				if (!mem.IsValidPtr(ItemSlot)) continue;
 
-				auto Size = ItemSlots->GetSize();
+				auto Sprite = ItemSlot->GetItemInstance()->GetItemDefinition()->GetSprite();
+				if (!mem.IsValidPtr(Sprite)) continue;
 
-				for (int i = 0; i < Size; i++)
-				{
-					auto ItemSlot = ItemSlots->Get(i);
-					if (!mem.IsValidPtr(ItemSlot)) continue;
+				auto Texture = Sprite->GetTexture();
+				if (!mem.IsValidPtr(Texture)) continue;
 
-					auto Sprite = ItemSlot->GetItemInstance()->GetItemDefinition()->GetSprite();
-					if (!mem.IsValidPtr(Sprite)) continue;
+				auto Rect = Sprite->GetRect();
 
-					auto Texture = Sprite->GetTexture();
-					if (!mem.IsValidPtr(Texture)) continue;
+				Unity::Rect DrawRect;
+				DrawRect.x = startX;
+				DrawRect.y = startY;
+				DrawRect.width = Rect.width / 7;
+				DrawRect.height = Rect.height / 7;
 
-					auto Rect = Sprite->GetRect();
+				Unity::GUI::DrawTexture(DrawRect, Texture);
 
-					Unity::Rect DrawRect;
-					DrawRect.x = startX;
-					DrawRect.y = startY;
-					DrawRect.width = Rect.width / 7;
-					DrawRect.height = Rect.height / 7;
-
-					Unity::GUI::DrawTexture(DrawRect, Texture);
-
-					startX += (Rect.width / 10) + spacing;
-				}
+				startX += (Rect.width / 10) + spacing;
 			}
 		}
 	}

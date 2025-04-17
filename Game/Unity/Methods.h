@@ -59,6 +59,7 @@ namespace Methods
 	inline auto get_type = reinterpret_cast<EventType(*)(Event*)>(0);
 	inline auto LoadFromFile = reinterpret_cast<uintptr_t(*)(String*, uint32_t, uint64_t)>(0);
 	inline auto LoadAsset = reinterpret_cast<uintptr_t(*)(uintptr_t, String*, uintptr_t)>(0);
+	inline auto get_sprite = reinterpret_cast<Sprite * (*)(SpriteRenderer*)>(0);
 
 	void Init();
 }

@@ -18,6 +18,14 @@ namespace ScheduleOne
 	{
 		class MoneyManager;
 	}
+
+	namespace Casino
+	{
+		class SlotReel;
+		class SlotMachine;
+		class PlayingCard;
+		class CardSprite;
+	}
 }
 
 namespace Sdk
@@ -28,6 +36,10 @@ namespace Sdk
 		inline auto LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(0);
 		inline auto ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(0);
 		inline auto ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(0);
+		inline auto set_CurrentSymbol = reinterpret_cast<void(*)(ScheduleOne::Casino::SlotReel*, uint32_t)>(0);
+		inline auto GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(0);
+		inline auto get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
+		inline auto get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
 
 		static void Init()
 		{
@@ -35,6 +47,10 @@ namespace Sdk
 			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
 			ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(mem.GameAssembly + 0x945C30);
 			ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(mem.GameAssembly + 0x9478D0);
+			set_CurrentSymbol = reinterpret_cast<void(*)(ScheduleOne::Casino::SlotReel*, uint32_t)>(mem.GameAssembly + 0x460AA0);
+			GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(mem.GameAssembly + 0x780590);
+			get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x4608D0);
+			get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x460A60);
 		}
 	}
 }
@@ -121,6 +137,141 @@ namespace ScheduleOne
 		};
 	}
 
+	namespace Casino
+	{
+		static enum ECardSuit : uint32_t
+		{
+			Spades = 0,
+			Hearts = 1,
+			Diamonds = 2,
+			Clubs = 3,
+		};
+
+		static enum ECardValue : uint32_t
+		{
+			Blank = 0,
+			Ace = 1,
+			Two = 2,
+			Three = 3,
+			Four = 4,
+			Five = 5,
+			Six = 6,
+			Seven = 7,
+			Eight = 8,
+			Nine = 9,
+			Ten = 10,
+			Jack = 11,
+			Queen = 12,
+			King = 13,
+		};
+
+		static class CardSprite
+		{
+		public:
+
+			Unity::Sprite* GetSprite()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Sprite*>(this + 0x18);
+			}
+
+			ECardSuit GetSuit()
+			{
+				if (!mem.IsValidPtr(this)) return ECardSuit::Spades;
+				return mem.Read<ECardSuit>(this + 0x10);
+			}
+
+			ECardValue GetValue()
+			{
+				if (!mem.IsValidPtr(this)) return ECardValue::Blank;
+				return mem.Read<ECardValue>(this + 0x14);
+			}
+		};
+
+
+		class PlayingCard
+		{
+		public:
+
+			ECardSuit GetSuit()
+			{
+				if (!mem.IsValidPtr(this)) return ECardSuit::Spades;
+				return mem.Read<ECardSuit>(this + 0x24);
+			}
+
+			ECardValue GetValue()
+			{
+				if (!mem.IsValidPtr(this)) return ECardValue::Blank;
+				return mem.Read<ECardValue>(this + 0x28);
+			}
+
+			Unity::String* GetCardID()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::String*>(this + 0x38);
+			}
+
+			Unity::SpriteRenderer* GetSpriteRenderer()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::SpriteRenderer*>(this + 0x40);
+			}
+
+			CardSprite* GetCardSprite()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return Sdk::Methods::GetCardSprite(this, 3, 3);
+			}
+		};
+
+		class RTBGameController
+		{
+		public:
+
+			Unity::Array<PlayingCard*>* GetPlayingCards()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Array<PlayingCard*>*>(this + 0x158);
+			}
+		};
+
+		class SlotReel
+		{
+		public:
+
+			static enum ESymbol : uint32_t
+			{
+				Cherry = 0,
+				Lemon = 1,
+				Grape = 2,
+				Watermelon = 3,
+				Bell = 4,
+				Seven = 5,
+			};
+
+			static enum EOutcome : uint32_t
+			{
+				Jackpot = 0,
+				BigWin = 1,
+				SmallWin = 2,
+				MiniWin = 3,
+				NoWin = 4,
+			};
+
+			bool IsSpinning()
+			{
+				if (!mem.IsValidPtr(this)) return false;
+				return mem.Read<bool>(this + 0x20);
+			}
+
+			void SetCurrentSymbol(ESymbol symbol)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_CurrentSymbol(this, symbol);
+			}
+		};
+	}
+
 	namespace Map
 	{
 		class TimedAccessZone
@@ -129,8 +280,7 @@ namespace ScheduleOne
 
 			static Unity::Array<TimedAccessZone*>* GetTimedAccessZones()
 			{
-				auto TimedAccessZones = (Unity::Array<TimedAccessZone*>*)Unity::Object::FindObjectsOfType((Unity::Type*)il2cpp::TypeGetObject(("ScheduleOne.Map"), ("TimedAccessZone")));
-				return TimedAccessZones;
+				return (Unity::Array<TimedAccessZone*>*)Unity::Object::FindObjectsOfType((Unity::Type*)il2cpp::TypeGetObject(("ScheduleOne.Map"), ("TimedAccessZone")));
 			}
 
 			void SetOpenTime(float time)
@@ -682,12 +832,11 @@ namespace Funly
 
 				auto material = get_SkyboxMaterial(this);
 				auto shader = material->GetShader();
-				if (shader != Unity::Bundles::StarNestShader)
-				{
-					Unity::Bundles::StarNestMaterial->SetShader(Unity::Bundles::StarNestShader);
-					Unity::Bundles::StarNestMaterial->SetColor((L"_Color"), color);
-					set_SkyboxMaterial(this, Unity::Bundles::StarNestMaterial);
-				}
+				if (shader == Unity::Bundles::StarNestShader) return;
+
+				Unity::Bundles::StarNestMaterial->SetShader(Unity::Bundles::StarNestShader);
+				Unity::Bundles::StarNestMaterial->SetColor((L"_Color"), color);
+				set_SkyboxMaterial(this, Unity::Bundles::StarNestMaterial);
 			}
 		};
 

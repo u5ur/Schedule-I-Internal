@@ -33,6 +33,7 @@ namespace Unity
 	class Physics;
 	class Texture;
 	class Sprite;
+	class SpriteRenderer;
 
 #include "Enums.h"
 #include "Structs.h"
@@ -79,6 +80,11 @@ namespace Unity
 	public:
 		Material* GetMaterial();
 		void SetMaterial(Material* mat);
+	};
+
+	class SpriteRenderer {
+	public:
+		Sprite* GetSprite();
 	};
 
 	class Component : public Object {

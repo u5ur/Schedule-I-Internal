@@ -49,49 +49,33 @@ void Render::UI::DrawFilledRect(Unity::Rect rect, Unity::Color color, float roun
 	if (Unity::Material::material->SetPass(0)) {
 		Unity::GL::Begin(4);
 		Unity::GL::GLColor(color);
-
-		// Center rectangle
 		Unity::GL::Vertex({ x1, y1, 0 });
 		Unity::GL::Vertex({ x2, y1, 0 });
 		Unity::GL::Vertex({ x2, y2, 0 });
-
 		Unity::GL::Vertex({ x1, y1, 0 });
 		Unity::GL::Vertex({ x2, y2, 0 });
 		Unity::GL::Vertex({ x1, y2, 0 });
-
-		// 4 side rectangles
-		// Top
 		Unity::GL::Vertex({ x1, yMin, 0 });
 		Unity::GL::Vertex({ x2, yMin, 0 });
 		Unity::GL::Vertex({ x2, y1, 0 });
-
 		Unity::GL::Vertex({ x1, yMin, 0 });
 		Unity::GL::Vertex({ x2, y1, 0 });
 		Unity::GL::Vertex({ x1, y1, 0 });
-
-		// Bottom
 		Unity::GL::Vertex({ x1, y2, 0 });
 		Unity::GL::Vertex({ x2, y2, 0 });
 		Unity::GL::Vertex({ x2, yMax, 0 });
-
 		Unity::GL::Vertex({ x1, y2, 0 });
 		Unity::GL::Vertex({ x2, yMax, 0 });
 		Unity::GL::Vertex({ x1, yMax, 0 });
-
-		// Left
 		Unity::GL::Vertex({ xMin, y1, 0 });
 		Unity::GL::Vertex({ x1, y1, 0 });
 		Unity::GL::Vertex({ x1, y2, 0 });
-
 		Unity::GL::Vertex({ xMin, y1, 0 });
 		Unity::GL::Vertex({ x1, y2, 0 });
 		Unity::GL::Vertex({ xMin, y2, 0 });
-
-		// Right
 		Unity::GL::Vertex({ x2, y1, 0 });
 		Unity::GL::Vertex({ xMax, y1, 0 });
 		Unity::GL::Vertex({ xMax, y2, 0 });
-
 		Unity::GL::Vertex({ x2, y1, 0 });
 		Unity::GL::Vertex({ xMax, y2, 0 });
 		Unity::GL::Vertex({ x2, y2, 0 });
@@ -104,7 +88,7 @@ void Render::UI::DrawFilledRect(Unity::Rect rect, Unity::Color color, float roun
 				Unity::GL::Vertex({ cx + round * cosf(angle1), cy + round * sinf(angle1), 0 });
 				Unity::GL::Vertex({ cx + round * cosf(angle2), cy + round * sinf(angle2), 0 });
 			}
-			};
+		};
 
 		AddCorner(x1, y1, PI);
 		AddCorner(x2, y1, 1.5f * PI);
@@ -116,47 +100,47 @@ void Render::UI::DrawFilledRect(Unity::Rect rect, Unity::Color color, float roun
 	Unity::GL::PopMatrix();
 }
 
-bool Render::UI::Button(Unity::Rect r, Unity::Color col, Unity::String txt, float round)
+bool Render::UI::Button(Unity::Rect rect, Unity::Color color, Unity::String text, float round)
 {
-	if (txt.size > 0) {
-		auto* label = Unity::GUIContent::Temp(&txt);
+	if (text.size > 0) {
+		auto* label = Unity::GUIContent::Temp(&text);
 		auto sz = Unity::GUISkin::label->CalcSize(label);
-		if (r.width < sz.x) r.width = sz.x + 5;
-		if (r.height < sz.y) r.height = sz.y;
+		if (rect.width < sz.x) rect.width = sz.x + 5;
+		if (rect.height < sz.y) rect.height = sz.y;
 	}
 
 	static bool wasPressed = false;
 	static int anim = 0;
 	static Unity::Rect last;
 
-	bool clicked = Unity::GUI::Button(&r, Unity::GUIContent::Temp(new Unity::String(L"")), Unity::GUISkin::label);
+	bool clicked = Unity::GUI::Button(&rect, Unity::GUIContent::Temp(new Unity::String(L"")), Unity::GUISkin::label);
 	auto* evt = Unity::Event::GetCurrent();
-	bool hover = r.Contains(evt->GetMousePosition());
+	bool hover = rect.Contains(evt->GetMousePosition());
 	bool pressed = hover && (evt->GetType() == Unity::EventType::MouseDown || evt->GetType() == Unity::EventType::MouseDrag);
 
-	if (clicked) { wasPressed = true; anim = 5; last = r; }
+	if (clicked) { wasPressed = true; anim = 5; last = rect; }
 
-	if (wasPressed && anim > 0 && r.x == last.x && r.y == last.y) {
+	if (wasPressed && anim > 0 && rect.x == last.x && rect.y == last.y) {
 		float grow = 4.0f * (anim / 5.0f);
-		r.x -= grow / 2; r.y -= grow / 2; r.width += grow; r.height += grow;
+		rect.x -= grow / 2; rect.y -= grow / 2; rect.width += grow; rect.height += grow;
 		if (--anim <= 0) wasPressed = false;
 	}
 
 	float dim = pressed ? 0.7f : (hover ? 0.9f : 1.0f);
-	col.r *= dim; col.g *= dim; col.b *= dim;
+	color.r *= dim; color.g *= dim; color.b *= dim;
 
-	DrawFilledRect(r, col, round);
+	DrawFilledRect(rect, color, round);
 
-	if (txt.size > 0) {
+	if (text.size > 0) {
 		Unity::GUISkin::label->SetAlignment(4);
 		Unity::GUISkin::label->SetFontSize(14);
-		Unity::GUI::Label(r, Unity::GUIContent::Temp(&txt), Unity::GUISkin::label);
+		Unity::GUI::Label(rect, Unity::GUIContent::Temp(&text), Unity::GUISkin::label);
 	}
 
 	return clicked;
 }
 
-void Render::UI::SliderInt(Unity::Rect rect, Unity::String label, int* value, int min, int max)
+void Render::UI::SliderInt(Unity::Rect rect, Unity::String text, int* value, int min, int max)
 {
 	*value = std::clamp(*value, min, max);
 
@@ -180,7 +164,7 @@ void Render::UI::SliderInt(Unity::Rect rect, Unity::String label, int* value, in
 	Unity::Color handleColor = Unity::Color(0.9f, 0.9f, 0.9f, 1.0f);
 	DrawFilledRect(handleRect, handleColor, 4.0f);
 
-	Unity::GUIContent* labelContent = Unity::GUIContent::Temp(&label);
+	Unity::GUIContent* labelContent = Unity::GUIContent::Temp(&text);
 	Unity::GUISkin::label->SetAlignment(3);
 	Unity::GUISkin::label->SetFontSize(14);
 	Unity::Rect labelRect = { rect.x + rect.width + 8, rect.y, Unity::GUISkin::label->CalcSize(labelContent).x, rect.height };

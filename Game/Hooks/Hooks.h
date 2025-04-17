@@ -35,7 +35,7 @@ namespace Hooks
 
 	inline void (*OrigUpdate)(uint64_t);
 
-	static void InitUpdate(void* func)
+	static void InitUpdateCamera(void* func)
 	{
 		OrigUpdate = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "Update", 0, "", "ScheduleOne.PlayerScripts")));
 		hook->HookCPP(func, ("Update"), ("PlayerCamera"), ("ScheduleOne.PlayerScripts"), 0);
@@ -55,5 +55,13 @@ namespace Hooks
 	{
 		OrigUpdateMoney = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "Update", 0, "", "ScheduleOne.Money")));
 		hook->HookCPP(func, ("Update"), ("MoneyManager"), ("ScheduleOne.Money"), 0);
+	}
+
+	inline void (*OrigUpdateRTB)(uint64_t);
+
+	static void InitUpdateRTB(void* func)
+	{
+		OrigUpdateRTB = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("RTBGameController", "FixedUpdate", 0, "", "ScheduleOne.Casino")));
+		hook->HookCPP(func, ("FixedUpdate"), ("RTBGameController"), ("ScheduleOne.Casino"), 0);
 	}
 }

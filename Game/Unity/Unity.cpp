@@ -60,6 +60,8 @@ void Methods::Init() {
 	get_Texture = reinterpret_cast<Texture*(*)(Sprite*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Sprite", "get_texture", 0, "", "UnityEngine")));
 	get_Rect = reinterpret_cast<Unity::Rect(*)(Sprite*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Sprite", "get_rect", 0, "", "UnityEngine")));
 	DrawTexture = reinterpret_cast<void(*)(Unity::Rect, Texture*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("GUI", "DrawTexture", 2, "", "UnityEngine")));
+	get_sprite = reinterpret_cast<Sprite*(*)(SpriteRenderer*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SpriteRenderer", "get_sprite", 1, "", "UnityEngine")));
+
 }
 
 float Time::GetTime() {
@@ -154,6 +156,12 @@ bool Material::SetPass(int pass) {
 
 	if (!mem.IsValidPtr(this)) return false;
 	return Methods::SetPass(this, pass);
+}
+
+Sprite* SpriteRenderer::GetSprite()
+{
+	if (!mem.IsValidPtr(this)) return nullptr;
+	return Methods::get_sprite(this);
 }
 
 Material* Renderer::GetMaterial() {

@@ -12,10 +12,15 @@ namespace Render
 	namespace UI
 	{
 		void DrawLine(Vector2 start, Vector2 end, Unity::Color color);
-		void DrawFilledRect(Unity::Rect r, Unity::Color c, float round);
-		bool Button(Unity::Rect r, Unity::Color col, Unity::String txt, float round);
-		void SliderInt(Unity::Rect rect, Unity::String label, int* value, int min, int max);
+
+		void DrawFilledRect(Unity::Rect rect, Unity::Color color, float round);
+
+		bool Button(Unity::Rect rect, Unity::Color color, Unity::String text, float round);
+
+		void SliderInt(Unity::Rect rect, Unity::String text, int* value, int min, int max);
+
 		void DrawWindow(Unity::Rect pos, Unity::Color color);
+
 		void Checkbox(Unity::Rect rect, Unity::Color color, Unity::String text, bool* value);
 	}
 
@@ -37,6 +42,8 @@ namespace Render
 	void UpdateWeapon(uint64_t a1);
 
 	void UpdateMoney(uint64_t a1);
+
+	void UpdateRTB(uint64_t a1);
 
 	bool Init();
 
