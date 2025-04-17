@@ -29,7 +29,7 @@ namespace Hooks
 
 	static void InitUpdateVisuals(void* func)
 	{
-		OrigUpdateVisuals = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x6D2A10);
+		OrigUpdateVisuals = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("EnvironmentFX", "UpdateVisuals", 0, "", "ScheduleOne.FX")));
 		hook->HookCPP(func, ("UpdateVisuals"), ("EnvironmentFX"), ("ScheduleOne.FX"), 0);
 	}
 
@@ -37,7 +37,7 @@ namespace Hooks
 
 	static void InitUpdate(void* func)
 	{
-		OrigUpdate = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x6AB230);
+		OrigUpdate = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "Update", 0, "", "ScheduleOne.PlayerScripts")));
 		hook->HookCPP(func, ("Update"), ("PlayerCamera"), ("ScheduleOne.PlayerScripts"), 0);
 	}
 
@@ -45,7 +45,15 @@ namespace Hooks
 
 	static void InitUpdateWeapon(void* func)
 	{
-		OrigUpdateWeapon = reinterpret_cast<void(*)(uint64_t)>(mem.GameAssembly + 0x84C3A0);
+		OrigUpdateWeapon = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("Equippable_RangedWeapon", "Update", 0, "", "ScheduleOne.Equipping")));
 		hook->HookCPP(func, ("Update"), ("Equippable_RangedWeapon"), ("ScheduleOne.Equipping"), 0);
+	}
+
+	inline void (*OrigUpdateMoney)(uint64_t);
+
+	static void InitUpdateMoney(void* func)
+	{
+		OrigUpdateMoney = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "Update", 0, "", "ScheduleOne.Money")));
+		hook->HookCPP(func, ("Update"), ("MoneyManager"), ("ScheduleOne.Money"), 0);
 	}
 }

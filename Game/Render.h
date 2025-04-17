@@ -21,15 +21,22 @@ namespace Render
 
 	static ScheduleOne::NPCs::NPC* ClosestNPC = nullptr;
 
-	void DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimation* anim, Unity::Camera* cam, Unity::Color color);
+	namespace helper
+	{
+		void DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimation* anim, Unity::Camera* cam, Unity::Color color);
 
-	bool IsVisible(Unity::Camera* cam, Vector3 target_pos);
+		bool IsVisible(Unity::Camera* cam, Vector3 target_pos);
+
+		void UnlockAllDoors();
+	}
 
 	void UpdateSky(uint64_t a1);
 
 	void UpdateCamera(uint64_t a1);
 
 	void UpdateWeapon(uint64_t a1);
+
+	void UpdateMoney(uint64_t a1);
 
 	bool Init();
 

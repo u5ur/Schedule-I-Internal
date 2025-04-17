@@ -21,7 +21,6 @@
 
 namespace Settings
 {
-
 	namespace Aimbot
 	{
 		inline bool bAimbot = true;
@@ -34,5 +33,20 @@ namespace Settings
 		inline bool bChams = true;
 		inline bool bInventory = true;
 		inline bool bCustomSky = true;
+	}
+
+	namespace Exploit
+	{
+		inline bool bAddMoney = false;
+		inline int AddMoneyAmount = 0;
+
+		inline bool bAddBalance = false;
+		inline int AddBalanceAmount = 0;
+
+		inline bool bSpeedMutli = false;
+		inline int SpeedMulti = 0;
+
+		inline bool bJumpMulti = false;
+		inline int JumpMulti = 0;
 	}
 }

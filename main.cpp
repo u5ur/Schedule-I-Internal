@@ -43,6 +43,7 @@ bool Init()
 	Hooks::InitUpdateVisuals((void*)Render::UpdateSky);
 	Hooks::InitUpdate((void*)Render::UpdateCamera);
 	Hooks::InitUpdateWeapon((void*)Render::UpdateWeapon);
+	Hooks::InitUpdateMoney((void*)Render::UpdateMoney);
 
 	return Result;
 }

@@ -13,6 +13,11 @@ namespace ScheduleOne
 	{
 		class Equippable_RangedWeapon;
 	}
+
+	namespace Money
+	{
+		class MoneyManager;
+	}
 }
 
 namespace Sdk
@@ -20,12 +25,16 @@ namespace Sdk
 	namespace Methods
 	{
 		inline auto Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(0);
-		inline auto LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
+		inline auto LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(0);
+		inline auto ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(0);
+		inline auto ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(0);
 
 		static void Init()
 		{
 			Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(mem.GameAssembly + 0x84A270);
 			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
+			ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(mem.GameAssembly + 0x945C30);
+			ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(mem.GameAssembly + 0x9478D0);
 		}
 	}
 }
@@ -99,6 +108,7 @@ namespace ScheduleOne
 				#if USE_ASSETBUNDLE
 					Unity::Bundles::HologramMaterial->SetShader(Unity::Bundles::HologramShader);
 					Unity::Bundles::HologramMaterial->SetColor(L"_Color", { 1, 0, 0, 1 });
+					Unity::Bundles::HologramMaterial->SetInt(L"_ZTest", 8);
 					Renderer->SetMaterial(Unity::Bundles::HologramMaterial);
 				#else
 					material->SetShader(shader);
@@ -107,6 +117,52 @@ namespace ScheduleOne
 				#endif
 
 				}
+			}
+		};
+	}
+
+	namespace Map
+	{
+		class TimedAccessZone
+		{
+		public:
+
+			static Unity::Array<TimedAccessZone*>* GetTimedAccessZones()
+			{
+				auto TimedAccessZones = (Unity::Array<TimedAccessZone*>*)Unity::Object::FindObjectsOfType((Unity::Type*)il2cpp::TypeGetObject(("ScheduleOne.Map"), ("TimedAccessZone")));
+				return TimedAccessZones;
+			}
+
+			void SetOpenTime(float time)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<int>(this + 0x48, time);
+			}
+
+			void SetCloseTime(float time)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<int>(this + 0x4C, time);
+			}
+		};
+	}
+
+	namespace Money
+	{
+		class MoneyManager
+		{
+		public:
+
+			void AddCash(float amount)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::ChangeCashBalance(this, amount, true, true);
+			}
+
+			void AddBalance(float amount)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::ReceiveOnlineTransaction(this, Unity::String::New("za"), amount, 1, Unity::String::New("za"));
 			}
 		};
 	}
@@ -206,6 +262,7 @@ namespace ScheduleOne
 
 	namespace ItemFramework
 	{
+
 		class ItemDefinition
 		{
 		public:

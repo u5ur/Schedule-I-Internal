@@ -1,6 +1,6 @@
 #include "Render.h"
 
-void Render::DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimation* anim, Unity::Camera* cam, Unity::Color color)
+void Render::helper::DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimation* anim, Unity::Camera* cam, Unity::Color color)
 {
 	auto head_b = anim->GetBonePos(ScheduleOne::Bone::Head);
 	auto spine4_b = anim->GetBonePos(ScheduleOne::Bone::Spine4);
@@ -56,9 +56,27 @@ void Render::DrawSkeleton(ScheduleOne::AvatarFramework::Animation::AvatarAnimati
 	UI::DrawLine(l_foot, l_toe, color);
 }
 
-bool Render::IsVisible(Unity::Camera* cam, Vector3 target_pos)
+bool Render::helper::IsVisible(Unity::Camera* cam, Vector3 target_pos)
 {
 	Vector3 Direction = (target_pos - cam->Location);
 	float dist = Direction.Magnitude() * 0.9f;
 	return !Unity::Methods::Raycast(Unity::Ray(cam->Location, Direction), dist, -1, Unity::QueryTriggerInteraction::Ignore);
+}
+
+void Render::helper::UnlockAllDoors()
+{
+	auto TimedAccessZones = ScheduleOne::Map::TimedAccessZone::GetTimedAccessZones();
+	if (!mem.IsValidPtr(TimedAccessZones)) return;
+
+	auto Size = TimedAccessZones->GetSize();
+	if (Size <= 0 || Size >= 100) return;
+
+	for (int i = 0; i < Size; i++)
+	{
+		auto TimedAccessZone = TimedAccessZones->Get(i);
+		if (!mem.IsValidPtr(TimedAccessZone)) continue;
+
+		TimedAccessZone->SetOpenTime(0);
+		TimedAccessZone->SetCloseTime(0);
+	}
 }

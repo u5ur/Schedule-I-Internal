@@ -46,6 +46,26 @@ void Render::UpdateCamera(uint64_t a1)
 	}
 }
 
+void Render::UpdateMoney(uint64_t a1)
+{
+	if (Hooks::OrigUpdateMoney)
+	{
+		Hooks::OrigUpdateMoney(a1);
+
+		auto MoneyManager = (ScheduleOne::Money::MoneyManager*)a1;
+		if (!mem.IsValidPtr(MoneyManager)) return;
+
+		if (Settings::Exploit::bAddBalance)
+		{
+			MoneyManager->AddBalance(10000);
+		}
+		else if (Settings::Exploit::bAddMoney)
+		{
+			MoneyManager->AddCash(10000);
+		}
+	}
+}
+
 void Render::UpdateWeapon(uint64_t a1)
 {
 	if (Hooks::OrigUpdateWeapon)
@@ -88,7 +108,7 @@ void Render::UpdateSky(uint64_t a1)
 		auto SkyController = TimeOfDayController->GetSkyMaterialController();
 		if (!mem.IsValidPtr(SkyController)) return;
 
-#if USE_ASSETBUNDLE == true
+#if USE_ASSETBUNDLE
 		SkyController->SetSkyboxMaterial(Unity::Color(0.0f, 0.0f, 0.3f, 1.0f));
 #else
 		SkyController->SetSkyColor(Unity::Color(1.0f, 0.7f, 0.9f, 1.0f));
@@ -147,7 +167,7 @@ void Render::RenderNPCs()
 		float ScreenDist = std::sqrt(dx * dx + dy * dy);
 
 		if (ScreenDist <= 100 &&
-			IsVisible(Camera, Head3d) &&
+			helper::IsVisible(Camera, Head3d) &&
 			ScreenDist < MinScreenDistanceNpc)
 		{
 			MinScreenDistanceNpc = ScreenDist;
@@ -161,7 +181,7 @@ void Render::RenderNPCs()
 
 		if (Settings::Visuals::bChams) NPC->GetAvatar()->SetChams(Shader, Unity::Color{ 1, 0, 0, 1 });
 
-		if (Settings::Visuals::bSkeleton) DrawSkeleton(NPC->GetAvatar()->GetAvatarAnimation(), Camera, Unity::Color(1, 1, 1, 1));
+		if (Settings::Visuals::bSkeleton) helper::DrawSkeleton(NPC->GetAvatar()->GetAvatarAnimation(), Camera, Unity::Color(1, 1, 1, 1));
 	}
 
 	if (mem.IsValidPtr(ClosestNPC))
