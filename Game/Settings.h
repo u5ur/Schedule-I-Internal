@@ -48,5 +48,10 @@ namespace Settings
 
 		inline bool bJumpMulti = false;
 		inline int JumpMulti = 0;
+
+		inline bool bAlwaysWinBj = false;
+
+		inline bool bCarFly = false;
+
 	}
 }

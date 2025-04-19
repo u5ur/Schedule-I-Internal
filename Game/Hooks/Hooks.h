@@ -64,4 +64,20 @@ namespace Hooks
 		OrigUpdateRTB = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("RTBGameController", "FixedUpdate", 0, "", "ScheduleOne.Casino")));
 		hook->HookCPP(func, ("FixedUpdate"), ("RTBGameController"), ("ScheduleOne.Casino"), 0);
 	}
+
+	inline void (*OrigUpdateBlackjack)(uint64_t);
+
+	static void InitUpdateBJ(void* func)
+	{
+		OrigUpdateBlackjack = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("BlackjackGameController", "FixedUpdate", 0, "", "ScheduleOne.Casino")));
+		hook->HookCPP(func, ("FixedUpdate"), ("BlackjackGameController"), ("ScheduleOne.Casino"), 0);
+	}
+
+	inline void (*OrigUpdateVehicle)(uint64_t);
+
+	static void InitUpdateVehicle(void* func)
+	{
+		OrigUpdateVehicle = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("LandVehicle", "Update", 0, "", "ScheduleOne.Vehicles")));
+		hook->HookCPP(func, ("Update"), ("LandVehicle"), ("ScheduleOne.Vehicles"), 0);
+	}
 }

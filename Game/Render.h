@@ -33,6 +33,12 @@ namespace Render
 		bool IsVisible(Unity::Camera* cam, Vector3 target_pos);
 
 		void UnlockAllDoors();
+
+		void SetDealerCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj);
+
+		void SetPlayerCards(ScheduleOne::Casino::BlackjackGameController* bj);
+
+		void SetDeckCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj);
 	}
 
 	void UpdateSky(uint64_t a1);
@@ -44,6 +50,10 @@ namespace Render
 	void UpdateMoney(uint64_t a1);
 
 	void UpdateRTB(uint64_t a1);
+
+	void UpdateBJ(uint64_t a1);
+
+	void UpdateVehicle(uint64_t a1);
 
 	bool Init();
 

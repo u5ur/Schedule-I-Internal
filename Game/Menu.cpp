@@ -3,7 +3,7 @@
 void Render::RenderMenu()
 {
 	static bool isOpen = true;
-	if (mem.GetInput()->bKeyPressed(VK_DELETE))
+	if (mem.GetInput()->bIsKeyDown(VK_DELETE))
 		isOpen = !isOpen;
 
 	if (!isOpen) return;
@@ -53,6 +53,12 @@ void Render::RenderMenu()
 	}
 	else if (CurrentTab == 2)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Car Fly", &Settings::Exploit::bCarFly);
+		y += 25;
+
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Always Win Blackjack", &Settings::Exploit::bAlwaysWinBj);
+		y += 25;
+
 		Settings::Exploit::bAddMoney = UI::Button({ x, y, 20, 20 }, ThemeColor, L"Add $10000 Cash", 5);
 		y += 25;
 

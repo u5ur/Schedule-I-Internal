@@ -21,10 +21,12 @@ namespace ScheduleOne
 
 	namespace Casino
 	{
+		class RTBGameController;
 		class SlotReel;
 		class SlotMachine;
 		class PlayingCard;
 		class CardSprite;
+		class CardController;
 	}
 }
 
@@ -40,6 +42,13 @@ namespace Sdk
 		inline auto GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(0);
 		inline auto get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
 		inline auto get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
+		inline auto set_IsFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, bool)>(0);
+		inline auto set_Suit = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(0);
+		inline auto set_Value = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(0);
+		inline auto SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(0);
+		inline auto SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
+		inline auto SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
+		inline auto GetQuestionsAndAnswers = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::RTBGameController*, uint32_t, Unity::String*&, Unity::Array<Unity::String*>*&)>(0);
 
 		static void Init()
 		{
@@ -51,6 +60,14 @@ namespace Sdk
 			GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(mem.GameAssembly + 0x780590);
 			get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x4608D0);
 			get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x460A60);
+			GetQuestionsAndAnswers = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::RTBGameController*, uint32_t, Unity::String*&, Unity::Array<Unity::String*>*&)>(mem.GameAssembly + 0x781E20);
+			set_IsFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, bool)>(mem.GameAssembly + 0x49C3D0);
+			SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(mem.GameAssembly + 0x75F630);
+			SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75E190);
+			set_Suit = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460AA0);
+			set_Value = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460B20);
+			SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75F880);
+
 		}
 	}
 }
@@ -188,10 +205,37 @@ namespace ScheduleOne
 			}
 		};
 
+		class CardController
+		{
+		public:
+
+			void SendCardFaceUp(Unity::String* cardid, bool face_up)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::SendCardFaceUp(this, cardid, face_up);
+			}
+
+			void SetCardValue(Unity::String* card_id, ECardSuit suit, ECardValue value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::SetCardValue(this, card_id, suit, value);
+				Sdk::Methods::SendCardValue(this, card_id, suit, value);
+			}
+
+		};
+
 
 		class PlayingCard
 		{
 		public:
+
+			struct CardData
+			{
+			public:
+
+				ECardSuit Suit;
+				ECardValue Value;
+			};
 
 			ECardSuit GetSuit()
 			{
@@ -205,10 +249,53 @@ namespace ScheduleOne
 				return mem.Read<ECardValue>(this + 0x28);
 			}
 
+			void SetSuit(ECardSuit suit)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_Suit(this, suit);
+			}
+
+			void SetValue(ECardValue value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_Value(this, value);
+			}
+
+			CardController* GetCardController()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<CardController*>(this + 0x30);
+			}
+
 			Unity::String* GetCardID()
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::String*>(this + 0x38);
+			}
+
+			void SetFaceUp(bool value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				return Sdk::Methods::set_IsFaceUp(this, value);
+			}
+
+			std::string ToString(ECardSuit suit, ECardValue value)
+			{
+				if (!mem.IsValidPtr(this)) return "";
+
+				const char* valueStr[] = {
+					"Blank", "Ace", "Two", "Three", "Four", "Five", "Six", "Seven",
+					"Eight", "Nine", "Ten", "Jack", "Queen", "King"
+				};
+
+				const char* suitStr[] = {
+					"Spades", "Hearts", "Diamonds", "Clubs"
+				};
+
+				if (value < Blank || value > King || suit > Clubs)
+					return "Invalid Card";
+
+				return std::string(valueStr[value]) + " of " + suitStr[suit];
 			}
 
 			Unity::SpriteRenderer* GetSpriteRenderer()
@@ -217,16 +304,43 @@ namespace ScheduleOne
 				return mem.Read<Unity::SpriteRenderer*>(this + 0x40);
 			}
 
-			CardSprite* GetCardSprite()
+			CardSprite* GetCardSprite(uint32_t suit, uint32_t value)
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
-				return Sdk::Methods::GetCardSprite(this, 3, 3);
+				return Sdk::Methods::GetCardSprite(this, suit, value);
 			}
 		};
 
 		class RTBGameController
 		{
 		public:
+
+			static enum EStage : uint32_t
+			{
+				WaitingForPlayers = 0,
+				RedOrBlack = 1,
+				HigherOrLower = 2,
+				InsideOrOutside = 3,
+				Suit = 4,
+			};
+
+			EStage GetCurrentStage()
+			{
+				if (!mem.IsValidPtr(this)) return EStage::WaitingForPlayers;
+				return mem.Read<EStage>(this + 0x178);
+			}
+
+			void GetQuestionsAndAnswers(EStage stage, Unity::String*& question, Unity::Array<Unity::String*>*& answers)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::GetQuestionsAndAnswers(this, stage, question, answers);
+			}
+
+			Unity::List<PlayingCard::CardData>* GetDrawnCards()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::List<PlayingCard::CardData>*>(this + 0x1D8);
+			}
 
 			Unity::Array<PlayingCard*>* GetPlayingCards()
 			{
@@ -235,10 +349,32 @@ namespace ScheduleOne
 			}
 		};
 
-		class SlotReel
+		class BlackjackGameController
 		{
 		public:
 
+			Unity::List<PlayingCard*>* GetDealerCards()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::List<PlayingCard*>*>(this + 0x1E0);
+			}
+
+			Unity::List<PlayingCard*>* GetPlayerCards()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::List<PlayingCard*>*>(this + 0x1C0);
+			}
+
+			Unity::List<PlayingCard*>* GetPlayStack()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::List<PlayingCard*>*>(this + 0x1B8);
+			}
+		};
+
+		class SlotMachine
+		{
+		public:
 			static enum ESymbol : uint32_t
 			{
 				Cherry = 0,
@@ -248,6 +384,11 @@ namespace ScheduleOne
 				Bell = 4,
 				Seven = 5,
 			};
+		};
+
+		class SlotReel
+		{
+		public:
 
 			static enum EOutcome : uint32_t
 			{
@@ -264,11 +405,38 @@ namespace ScheduleOne
 				return mem.Read<bool>(this + 0x20);
 			}
 
-			void SetCurrentSymbol(ESymbol symbol)
+			void SetCurrentSymbol(SlotMachine::ESymbol symbol)
 			{
 				if (!mem.IsValidPtr(this)) return;
 				Sdk::Methods::set_CurrentSymbol(this, symbol);
 			}
+		};
+	}
+
+	namespace Vehicles
+	{
+		class LandVehicle
+		{
+		public:
+
+			bool LocalPlayerIsDriver()
+			{
+				if (!mem.IsValidPtr(this)) return false;
+				return mem.Read<bool>(this + 0x270);
+			}
+
+			Unity::RigidBody* GetRigidBody()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::RigidBody*>(this + 0x188);
+			}
+
+			void SetSpeed(float value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<float>(this + 0x280, value);
+			}
+
 		};
 	}
 

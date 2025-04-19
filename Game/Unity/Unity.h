@@ -34,6 +34,7 @@ namespace Unity
 	class Texture;
 	class Sprite;
 	class SpriteRenderer;
+	class RigidBody;
 
 #include "Enums.h"
 #include "Structs.h"
@@ -96,6 +97,9 @@ namespace Unity
 
 	class Transform : public Component {
 	public:
+		Vector3 GetForward();
+		Vector3 GetUp();
+		Vector3 GetRight();
 		Vector3 GetPosition();
 	};
 
@@ -115,6 +119,14 @@ namespace Unity
 		Vector3 GetLocation();
 		Matrix4x4 GetViewMatrix();
 		Vector2 WorldToScreen(Vector3 world_pos);
+	};
+
+	class RigidBody : public Component
+	{
+	public:
+		void SetVelocity(Vector3 value);
+		void SetRotation(Vector4 value);
+		Vector4 GetRotation();
 	};
 
 	class Screen {

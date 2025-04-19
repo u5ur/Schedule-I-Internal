@@ -48,6 +48,8 @@ struct Vector3
 	inline Vector3 operator*(const Vector3& other) const { return { x * other.x, y * other.y, z * other.z }; }
 	inline Vector3 operator/(const Vector3& other) const { return { x / other.x, y / other.y, z / other.z }; }
 	inline Vector3 operator-() const { return { -x, -y, -z }; }
+	inline Vector3& operator+=(const Vector3& other) { return *this = *this + other; }
+	inline Vector3& operator-=(const Vector3& other) { return *this = *this - other; }
 
 	inline Vector3 normalized() const
 	{
@@ -139,6 +141,24 @@ struct Vector4
 
 		return result;
 	}
+
+	static inline Vector4 FromEuler(const Vector3& euler)
+	{
+		float cx = cosf(euler.x * 0.5f);
+		float sx = sinf(euler.x * 0.5f);
+		float cy = cosf(euler.y * 0.5f);
+		float sy = sinf(euler.y * 0.5f);
+		float cz = cosf(euler.z * 0.5f);
+		float sz = sinf(euler.z * 0.5f);
+
+		Vector4 q;
+		q.w = cx * cy * cz + sx * sy * sz;
+		q.x = sx * cy * cz - cx * sy * sz;
+		q.y = cx * sy * cz + sx * cy * sz;
+		q.z = cx * cy * sz - sx * sy * cz;
+		return q;
+	}
+
 
 	inline Vector4 conjugate() const { return { -x, -y, -z, w }; }
 };

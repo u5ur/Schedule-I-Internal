@@ -80,3 +80,70 @@ void Render::helper::UnlockAllDoors()
 		TimedAccessZone->SetCloseTime(0);
 	}
 }
+
+void Render::helper::SetDealerCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj)
+{
+	if (!mem.IsValidPtr(bj)) return;
+
+	auto DealerCards = bj->GetDealerCards();
+	if (!mem.IsValidPtr(DealerCards)) return;
+
+	auto Size = DealerCards->GetSize();
+	if (Size <= 0 || Size >= 1000) return;
+
+	for (int i = 0; i < Size; i++)
+	{
+		auto Card = DealerCards->Get(i);
+		if (!mem.IsValidPtr(Card)) continue;
+
+		Card->GetCardController()->SendCardFaceUp(Card->GetCardID(), true);
+	}
+}
+
+void Render::helper::SetDeckCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj)
+{
+	if (!mem.IsValidPtr(bj)) return;
+
+	auto DeckCards = bj->GetPlayStack();
+	if (!mem.IsValidPtr(DeckCards)) return;
+
+	auto Size = DeckCards->GetSize();
+	if (Size <= 0 || Size >= 1000) return;
+
+	for (int i = 0; i < Size; i++)
+	{
+		auto Card = DeckCards->Get(i);
+		if (!mem.IsValidPtr(Card)) continue;
+
+		Card->GetCardController()->SendCardFaceUp(Card->GetCardID(), true);
+	}
+}
+
+void Render::helper::SetPlayerCards(ScheduleOne::Casino::BlackjackGameController* bj)
+{
+	if (!mem.IsValidPtr(bj)) return;
+
+	auto PlayerCards = bj->GetPlayerCards();
+	if (!mem.IsValidPtr(PlayerCards)) return;
+
+	auto Size = PlayerCards->GetSize();
+	if (Size <= 0 || Size >= 1000) return;
+
+	for (int i = 0; i < Size; i++)
+	{
+		auto Card = PlayerCards->Get(i);
+		if (!mem.IsValidPtr(Card)) continue;
+
+		auto Controller = Card->GetCardController();
+		if (!mem.IsValidPtr(Controller)) continue;
+
+		if (i == 0)
+		{
+			Controller->SetCardValue(Card->GetCardID(), ScheduleOne::Casino::ECardSuit::Hearts, ScheduleOne::Casino::ECardValue::King);
+		}
+		else if (i == 1)
+		{
+			Controller->SetCardValue(Card->GetCardID(), ScheduleOne::Casino::ECardSuit::Hearts, ScheduleOne::Casino::ECardValue::Ace);
+		}
+	}
+}

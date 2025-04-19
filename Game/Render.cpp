@@ -119,41 +119,64 @@ void Render::UpdateSky(uint64_t a1)
 	}
 }
 
-void Render::UpdateRTB(uint64_t a1)
+void Render::UpdateBJ(uint64_t a1)
 {
-	///
-	// This doesnt really work rn idk if i can get this too work
-	///
-
-	if (Hooks::OrigUpdateRTB)
+	if (Hooks::OrigUpdateBlackjack)
 	{
-		Hooks::OrigUpdateRTB(a1);
+		Hooks::OrigUpdateBlackjack(a1);
 
-		auto RTBController = (ScheduleOne::Casino::RTBGameController*)a1;
-		if (!mem.IsValidPtr(RTBController)) return;
+		if (!Settings::Exploit::bAlwaysWinBj) return;
 
-		auto PlayingCards = RTBController->GetPlayingCards();
-		if (!mem.IsValidPtr(PlayingCards)) return;
+		auto BJController = (ScheduleOne::Casino::BlackjackGameController*)a1;
+		if (!mem.IsValidPtr(BJController)) return;
 
-		auto pSize = PlayingCards->GetSize();
-		if (pSize <= 0 || pSize > 100) return;
+		Render::helper::SetPlayerCards(BJController);
+	}
+}
 
-		for (int i = 0; i < pSize; i++)
-		{
-			auto PlayingCard = PlayingCards->Get(i);
-			if (!mem.IsValidPtr(PlayingCard)) continue;
+void Render::UpdateVehicle(uint64_t a1)
+{
+	if (Hooks::OrigUpdateVehicle)
+	{
+		Hooks::OrigUpdateVehicle(a1);
 
-			auto CardSprite = PlayingCard->GetCardSprite();
-			if (!mem.IsValidPtr(CardSprite)) continue;
+		if (!Settings::Exploit::bCarFly) return;
 
-			auto Sprite = CardSprite->GetSprite();
-			if (!mem.IsValidPtr(Sprite)) continue;
+		auto Vehicle = (ScheduleOne::Vehicles::LandVehicle*)a1;
+		if (!mem.IsValidPtr(Vehicle)) return;
+		if (!Vehicle->LocalPlayerIsDriver()) return;
 
-			auto Texture = Sprite->GetTexture();
-			if (!mem.IsValidPtr(Texture)) continue;
+		auto rb = Vehicle->GetRigidBody();
+		if (!mem.IsValidPtr(rb)) return;
 
-			Unity::GUI::DrawTexture({ 1920 / 2, 1080 / 2, 512, 512 }, Texture);
-		}
+		static float yaw = 0.0f;
+		const float turnSpeed = 2.0f;
+
+		if (mem.GetInput()->bIsKeyDown(0x41)) // A
+			yaw -= turnSpeed;
+
+		if (mem.GetInput()->bIsKeyDown(0x44)) // D
+			yaw += turnSpeed;
+
+		float rad = yaw * (3.14159265f / 180.0f);
+		Vector4 rot = Vector4::FromEuler({ 0.0f, rad, 0.0f });
+		rb->SetRotation(rot);
+
+		Vector3 dir = { 0.0f, 0.0f, 0.0f };
+
+		float speed = 20.0f;
+		if (mem.GetInput()->bIsKeyDown(VK_SHIFT)) // Speed boost
+			speed *= 2.0f;
+
+		auto forward = rb->GetTransform()->GetForward();
+		auto up = Vector3{ 0.0f, 1.0f, 0.0f };
+
+		if (mem.GetInput()->bIsKeyDown(0x57)) dir += forward * speed;  // W
+		if (mem.GetInput()->bIsKeyDown(0x53)) dir -= forward * speed;  // S
+		if (mem.GetInput()->bIsKeyDown(VK_SPACE)) dir += up * speed;
+		if (mem.GetInput()->bIsKeyDown(VK_CONTROL)) dir -= up * speed;
+
+		rb->SetVelocity(dir);
 	}
 }
 

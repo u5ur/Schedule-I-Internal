@@ -23,6 +23,9 @@ namespace Methods
 	inline auto FindObjectOfType = reinterpret_cast<Object * (*)(Type*)>(0);
 	inline auto get_main = reinterpret_cast<Camera * (*)()>(0);
 	inline auto get_position = reinterpret_cast<Vector3(*)(Transform*)>(0);
+	inline auto get_right = reinterpret_cast<Vector3(*)(Transform*)>(0);
+	inline auto get_up = reinterpret_cast<Vector3(*)(Transform*)>(0);
+	inline auto get_forward = reinterpret_cast<Vector3(*)(Transform*)>(0);
 	inline auto get_transform = reinterpret_cast<Transform * (*)(Component*)>(0);
 	inline auto GetType = reinterpret_cast<Type * (*)(uintptr_t)>(0);
 	inline auto get_FullNameOrDefault = reinterpret_cast<String * (*)(Type*)>(0);
@@ -60,6 +63,10 @@ namespace Methods
 	inline auto LoadFromFile = reinterpret_cast<uintptr_t(*)(String*, uint32_t, uint64_t)>(0);
 	inline auto LoadAsset = reinterpret_cast<uintptr_t(*)(uintptr_t, String*, uintptr_t)>(0);
 	inline auto get_sprite = reinterpret_cast<Sprite * (*)(SpriteRenderer*)>(0);
+	inline auto set_velocity = reinterpret_cast<void(*)(RigidBody*, Vector3)>(0);
+	inline auto set_rotation = reinterpret_cast<void(*)(RigidBody*, Vector4)>(0);
+	inline auto get_rotation = reinterpret_cast<Vector4(*)(RigidBody*)>(0);
+
 
 	void Init();
 }

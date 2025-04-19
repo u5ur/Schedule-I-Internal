@@ -39,13 +39,13 @@ bool Init()
 	Unity::Methods::Init();
 	Sdk::Methods::Init();
 
-	Hooks::InitOnGUI((void*)Render::OnGUI);
-	Hooks::InitUpdateVisuals((void*)Render::UpdateSky);
-	Hooks::InitUpdateCamera((void*)Render::UpdateCamera);
-	Hooks::InitUpdateWeapon((void*)Render::UpdateWeapon);
-	Hooks::InitUpdateMoney((void*)Render::UpdateMoney);
-
-	//Hooks::InitUpdateRTB((void*)Render::UpdateRTB);
+	Hooks::InitOnGUI(Render::OnGUI);
+	Hooks::InitUpdateVisuals(Render::UpdateSky);
+	Hooks::InitUpdateCamera(Render::UpdateCamera);
+	Hooks::InitUpdateWeapon(Render::UpdateWeapon);
+	Hooks::InitUpdateMoney(Render::UpdateMoney);
+	Hooks::InitUpdateBJ(Render::UpdateBJ);
+	Hooks::InitUpdateVehicle(Render::UpdateVehicle);
 
 	return Result;
 }

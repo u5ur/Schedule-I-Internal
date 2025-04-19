@@ -23,6 +23,9 @@ void Methods::Init() {
 	FindObjectOfType = reinterpret_cast<Object*(*)(Type*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Object", "FindObjectOfType", 1, "type", "UnityEngine")));
 	get_main = reinterpret_cast<Camera*(*)()>(il2cpp::ResolveICall("UnityEngine.Camera::get_main()"));
 	get_position = reinterpret_cast<Vector3(*)(Transform*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Transform", "get_position", 0, "", "UnityEngine")));
+	get_forward = reinterpret_cast<Vector3(*)(Transform*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Transform", "get_forward", 0, "", "UnityEngine")));
+	get_up = reinterpret_cast<Vector3(*)(Transform*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Transform", "get_up", 0, "", "UnityEngine")));
+	get_right = reinterpret_cast<Vector3(*)(Transform*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Transform", "get_right", 0, "", "UnityEngine")));
 	get_transform = reinterpret_cast<Transform * (*)(Component*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Component", "get_transform", 0, "", "UnityEngine")));
 	GetType = reinterpret_cast<Type * (*)(uintptr_t)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Object", "GetType", 0, "", "System")));
 	get_FullNameOrDefault = reinterpret_cast<String * (*)(Type*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Type", "get_FullNameOrDefault", 0, "", "System")));
@@ -61,6 +64,9 @@ void Methods::Init() {
 	get_Rect = reinterpret_cast<Unity::Rect(*)(Sprite*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Sprite", "get_rect", 0, "", "UnityEngine")));
 	DrawTexture = reinterpret_cast<void(*)(Unity::Rect, Texture*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("GUI", "DrawTexture", 2, "", "UnityEngine")));
 	get_sprite = reinterpret_cast<Sprite*(*)(SpriteRenderer*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("SpriteRenderer", "get_sprite", 1, "", "UnityEngine")));
+	set_velocity = reinterpret_cast<void(*)(RigidBody*, Vector3)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_velocity", 1, "", "UnityEngine")));
+	set_rotation = reinterpret_cast<void(*)(RigidBody*, Vector4)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_rotation", 1, "", "UnityEngine")));
+	get_rotation = reinterpret_cast<Vector4(*)(RigidBody*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "get_rotation", 1, "", "UnityEngine")));
 
 }
 
@@ -199,6 +205,21 @@ Vector3 Transform::GetPosition() {
 	return Methods::get_position(this);
 }
 
+Vector3 Transform::GetForward() {
+	if (!mem.IsValidPtr(this)) return Vector3::Zero();
+	return Methods::get_forward(this);
+}
+
+Vector3 Transform::GetRight() {
+	if (!mem.IsValidPtr(this)) return Vector3::Zero();
+	return Methods::get_right(this);
+}
+
+Vector3 Transform::GetUp() {
+	if (!mem.IsValidPtr(this)) return Vector3::Zero();
+	return Methods::get_up(this);
+}
+
 void GameObject::InternalCreateGameObject(GameObject* self, String name) {
 
 	if (!mem.IsValidPtr(self)) return;
@@ -248,6 +269,24 @@ Vector2 Camera::WorldToScreen(Vector3 world_pos)
 	float x = right_vec.Dot(world_pos) + this->ViewMatrix._41;
 
 	return Vector2((1920 / 2) * (1.f + x / w), (1080 / 2) * (1.f - y / w));
+}
+
+void RigidBody::SetVelocity(Vector3 value)
+{
+	if (!mem.IsValidPtr(this)) return;
+	Methods::set_velocity(this, value);
+}
+
+void RigidBody::SetRotation(Vector4 value)
+{
+	if (!mem.IsValidPtr(this)) return;
+	Methods::set_rotation(this, value);
+}
+
+Vector4 RigidBody::GetRotation()
+{
+	if (!mem.IsValidPtr(this)) return {};
+	return Methods::get_rotation(this);
 }
 
 int Screen::GetWidth() {

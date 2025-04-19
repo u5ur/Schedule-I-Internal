@@ -136,8 +136,8 @@
   <ItemGroup>
     <ClInclude Include="Game\Hooks\Hooks.h" />
     <ClInclude Include="Game\il2cpp\il2cpp.h" />
-    <ClInclude Include="Game\Memory\Memory.h" />
     <ClInclude Include="Game\Memory\Input.h" />
+    <ClInclude Include="Game\Memory\Memory.h" />
     <ClInclude Include="Game\Render.h" />
     <ClInclude Include="Game\Sdk.h" />
     <ClInclude Include="Game\Settings.h" />
@@ -151,11 +151,11 @@
   <ItemGroup>
     <ClCompile Include="Game\Helper.cpp" />
     <ClCompile Include="Game\il2cpp\il2cpp.cpp" />
+    <ClCompile Include="Game\Memory\Input.cpp" />
     <ClCompile Include="Game\UI.cpp" />
     <ClCompile Include="Game\Menu.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Game\Memory\Memory.cpp" />
-    <ClCompile Include="Game\Memory\Input.cpp" />
     <ClCompile Include="Game\Render.cpp" />
     <ClCompile Include="Game\Unity\Unity.cpp" />
   </ItemGroup>
