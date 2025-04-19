@@ -143,8 +143,13 @@ void Render::UpdateVehicle(uint64_t a1)
 		if (!Settings::Exploit::bCarFly) return;
 
 		auto Vehicle = (ScheduleOne::Vehicles::LandVehicle*)a1;
+
+		Vehicle->SetOwned(true);
+
 		if (!mem.IsValidPtr(Vehicle)) return;
 		if (!Vehicle->LocalPlayerIsDriver()) return;
+
+		Vehicle->SetChams(Shader, { 1, 1, 1, 1 });
 
 		auto rb = Vehicle->GetRigidBody();
 		if (!mem.IsValidPtr(rb)) return;
@@ -180,14 +185,53 @@ void Render::UpdateVehicle(uint64_t a1)
 	}
 }
 
+void Render::UpdateLocalPlayer()
+{
+	auto LocalPlayer = ScheduleOne::PlayerScripts::Player::GetLocalPlayer();
+	if (!mem.IsValidPtr(LocalPlayer)) return;
+
+
+	if (Settings::Exploit::bSkateboardFly)
+	{
+		auto Skateboard = LocalPlayer->GetSkateboard();
+		if (!mem.IsValidPtr(Skateboard)) return;
+
+		auto rb = Skateboard->GetRigidBody();
+		if (!mem.IsValidPtr(rb)) return;
+
+		static float yaw = 0.0f;
+		const float turnSpeed = 2.0f;
+
+		if (mem.GetInput()->bIsKeyDown(0x41)) // A
+			yaw -= turnSpeed;
+
+		if (mem.GetInput()->bIsKeyDown(0x44)) // D
+			yaw += turnSpeed;
+
+		float rad = yaw * (3.14159265f / 180.0f);
+		Vector4 rot = Vector4::FromEuler({ 0.0f, rad, 0.0f });
+		rb->SetRotation(rot);
+
+		Vector3 dir = { 0.0f, 0.0f, 0.0f };
+
+		float speed = 20.0f;
+		if (mem.GetInput()->bIsKeyDown(VK_SHIFT)) // Speed boost
+			speed *= 2.0f;
+
+		auto forward = rb->GetTransform()->GetForward();
+		auto up = Vector3{ 0.0f, 1.0f, 0.0f };
+
+		if (mem.GetInput()->bIsKeyDown(0x57)) dir += forward * speed;  // W
+		if (mem.GetInput()->bIsKeyDown(0x53)) dir -= forward * speed;  // S
+		if (mem.GetInput()->bIsKeyDown(VK_SPACE)) dir += up * speed;
+		if (mem.GetInput()->bIsKeyDown(VK_CONTROL)) dir -= up * speed;
+
+		rb->SetVelocity(dir);
+	}
+}
+
 void Render::RenderNPCs()
 {
-	auto Camera = Unity::Camera::GetMain();
-	if (!mem.IsValidPtr(Camera)) return;
-
-	Camera->GetViewMatrix();
-	Camera->GetLocation();
-
 	auto NPCRegistry = ScheduleOne::NPCs::NPCManager::GetNPCRegistry();
 	if (!mem.IsValidPtr(NPCRegistry)) return;
 

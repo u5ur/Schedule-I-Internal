@@ -66,6 +66,9 @@ namespace Methods
 	inline auto set_velocity = reinterpret_cast<void(*)(RigidBody*, Vector3)>(0);
 	inline auto set_rotation = reinterpret_cast<void(*)(RigidBody*, Vector4)>(0);
 	inline auto get_rotation = reinterpret_cast<Vector4(*)(RigidBody*)>(0);
+	inline auto set_isKinematic = reinterpret_cast<void(*)(RigidBody*, bool)>(0);
+	inline auto set_detectCollisions = reinterpret_cast<void(*)(RigidBody*, bool)>(0);
+	inline auto set_position = reinterpret_cast<void(*)(Transform*, Vector3)>(0);
 
 
 	void Init();

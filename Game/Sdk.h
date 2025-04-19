@@ -19,6 +19,11 @@ namespace ScheduleOne
 		class MoneyManager;
 	}
 
+	namespace Map
+	{
+		class DealerShip;
+	}
+
 	namespace Casino
 	{
 		class RTBGameController;
@@ -48,6 +53,7 @@ namespace Sdk
 		inline auto SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(0);
 		inline auto SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
 		inline auto SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
+		inline auto spawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::DealerShip*, Unity::String*)>(0);
 		inline auto GetQuestionsAndAnswers = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::RTBGameController*, uint32_t, Unity::String*&, Unity::Array<Unity::String*>*&)>(0);
 
 		static void Init()
@@ -66,6 +72,7 @@ namespace Sdk
 			SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75E190);
 			set_Suit = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460AA0);
 			set_Value = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460B20);
+			spawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::DealerShip*, Unity::String*)>(mem.GameAssembly + 0x9DAF70);
 			SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75F880);
 
 		}
@@ -419,6 +426,24 @@ namespace ScheduleOne
 		{
 		public:
 
+			class BodyMesh
+			{
+			public:
+
+				Unity::Renderer* GetRenderer()
+				{
+					if (!mem.IsValidPtr(this)) return nullptr;
+					return mem.Read<Unity::Renderer*>(this + 0x10);
+				}
+
+			};
+
+			void SetOwned(bool value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				mem.Write<bool>(this + 0x134, true);
+			}
+
 			bool LocalPlayerIsDriver()
 			{
 				if (!mem.IsValidPtr(this)) return false;
@@ -437,6 +462,46 @@ namespace ScheduleOne
 				mem.Write<float>(this + 0x280, value);
 			}
 
+			Unity::Array<BodyMesh*>* GetBodyMeshes()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Array<BodyMesh*>*>(this + 0x228);
+			}
+
+			void SetChams(Unity::Shader* shader, Unity::Color color)
+			{
+				if (!mem.IsValidPtr(this)) return;
+
+				auto BodyMeshs = GetBodyMeshes();
+				if (!mem.IsValidPtr(BodyMeshs)) return;
+
+				auto Size = BodyMeshs->GetSize();
+				if (Size <= 0 || Size >= 100) return;
+
+				for (int i = 0; i < Size; i++)
+				{
+					auto BodyMesh = BodyMeshs->Get(i);
+					if (!mem.IsValidPtr(BodyMesh)) continue;
+
+					auto Renderer = BodyMesh->GetRenderer();
+					if (!mem.IsValidPtr(Renderer)) continue;
+
+					auto Material = Renderer->GetMaterial();
+					if (!mem.IsValidPtr(Material)) continue;
+
+#if USE_ASSETBUNDLE
+					Unity::Bundles::HologramMaterial->SetShader(Unity::Bundles::HologramShader);
+					Unity::Bundles::HologramMaterial->SetColor(L"_Color", { 1, 0, 0, 1 });
+					Unity::Bundles::HologramMaterial->SetInt(L"_ZTest", 8);
+					Renderer->SetMaterial(Unity::Bundles::HologramMaterial);
+#else
+					Material->SetShader(shader);
+					Material->SetColor(L"_Color", color);
+					Material->SetInt(L"_ZTest", 8);
+#endif
+
+				}
+			}
 		};
 	}
 
@@ -462,6 +527,43 @@ namespace ScheduleOne
 				if (!mem.IsValidPtr(this)) return;
 				mem.Write<int>(this + 0x4C, time);
 			}
+		};
+
+		class DealerShip
+		{
+		public:
+
+			Unity::Array<Unity::Transform*>* GetSpawnPoints()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Array<Unity::Transform*>*>(this + 0x20);
+			}
+
+			void SpawnVehicle(Unity::String* carid)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::spawnVehicle(this, carid);
+			}
+
+			void SetSpawnPoints(Vector3 spawn_point)
+			{
+				if (!mem.IsValidPtr(this)) return;
+
+				auto SpawnPoints = mem.Read<Unity::Array<Unity::Transform*>*>(this + 0x20);
+				if (!mem.IsValidPtr(SpawnPoints)) return;
+
+				auto Size = SpawnPoints->GetSize();
+				if (Size <= 0 || Size >= 1000) return;
+
+				for (int i = 0; i < Size; i++)
+				{
+					auto SpawnPoint = SpawnPoints->Get(i);
+					if (!mem.IsValidPtr(SpawnPoint)) continue;
+
+					SpawnPoint->SetPosition(spawn_point);
+				}
+			}
+
 		};
 	}
 
@@ -574,6 +676,12 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return;
 				mem.Write<float>(this + 0x118, speed);
+			}
+
+			Unity::RigidBody* GetRigidBody()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::RigidBody*>(this + 0x130);
 			}
 		};
 	}
@@ -745,6 +853,36 @@ namespace ScheduleOne
 
 				return mem.Read<Unity::List<NPC*>*>(StaticFields + 0x0);
 			}
+
+			static NPC* GetNpcByName(const wchar_t* name)
+			{
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58232248);
+				if (!TypeInfo) return nullptr;
+
+				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
+				if (!StaticFields) return nullptr;
+
+				auto NPCs = mem.Read<Unity::List<NPC*>*>(StaticFields + 0x0);
+				if (!mem.IsValidPtr(NPCs)) return nullptr;
+
+				auto Size = NPCs->GetSize();
+				if (Size <= 0 || Size >= 5000) return nullptr;
+
+				for (int i = 0; i < Size; i++)
+				{
+					auto NPC = NPCs->Get(i);
+					if (!mem.IsValidPtr(NPC)) continue;
+
+					auto Name = NPC->GetFirstName();
+					if (!mem.IsValidPtr(Name)) continue;
+
+					if (wcscmp(Name->str, name) == 0)
+						return NPC;
+				}
+
+				return nullptr;
+			}
+
 		};
 	}
 

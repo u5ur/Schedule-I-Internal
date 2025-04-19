@@ -53,6 +53,8 @@ void Render::RenderMenu()
 	}
 	else if (CurrentTab == 2)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Skateboard Fly", &Settings::Exploit::bSkateboardFly);
+		y += 25;
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Car Fly", &Settings::Exploit::bCarFly);
 		y += 25;
 
@@ -68,6 +70,12 @@ void Render::RenderMenu()
 		if (UI::Button({ x, y, 20, 20 }, ThemeColor, L"Unlock All Doors", 5))
 		{
 			helper::UnlockAllDoors();
+		}
+		y += 25;
+
+		if (UI::Button({ x, y, 20, 20 }, ThemeColor, L"Spawn Car", 5))
+		{
+			helper::SpawnVehicle();
 		}
 		y += 25;
 

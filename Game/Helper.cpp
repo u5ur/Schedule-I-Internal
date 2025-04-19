@@ -81,42 +81,17 @@ void Render::helper::UnlockAllDoors()
 	}
 }
 
-void Render::helper::SetDealerCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj)
+
+void Render::helper::SpawnVehicle()
 {
-	if (!mem.IsValidPtr(bj)) return;
+	auto JeremyNPC = ScheduleOne::NPCs::NPCManager::GetNpcByName(L"Jeremy");
+	if (!mem.IsValidPtr(JeremyNPC)) return;
 
-	auto DealerCards = bj->GetDealerCards();
-	if (!mem.IsValidPtr(DealerCards)) return;
+	auto DealerShip = mem.Read<ScheduleOne::Map::DealerShip*>(JeremyNPC + 0x2d0);
+	if (!DealerShip) return;
 
-	auto Size = DealerCards->GetSize();
-	if (Size <= 0 || Size >= 1000) return;
-
-	for (int i = 0; i < Size; i++)
-	{
-		auto Card = DealerCards->Get(i);
-		if (!mem.IsValidPtr(Card)) continue;
-
-		Card->GetCardController()->SendCardFaceUp(Card->GetCardID(), true);
-	}
-}
-
-void Render::helper::SetDeckCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj)
-{
-	if (!mem.IsValidPtr(bj)) return;
-
-	auto DeckCards = bj->GetPlayStack();
-	if (!mem.IsValidPtr(DeckCards)) return;
-
-	auto Size = DeckCards->GetSize();
-	if (Size <= 0 || Size >= 1000) return;
-
-	for (int i = 0; i < Size; i++)
-	{
-		auto Card = DeckCards->Get(i);
-		if (!mem.IsValidPtr(Card)) continue;
-
-		Card->GetCardController()->SendCardFaceUp(Card->GetCardID(), true);
-	}
+	DealerShip->SetSpawnPoints(Vector3(Camera->Location.x + 5, Camera->Location.y, Camera->Location.z));
+	DealerShip->SpawnVehicle(Unity::String::New("cheetah"));
 }
 
 void Render::helper::SetPlayerCards(ScheduleOne::Casino::BlackjackGameController* bj)

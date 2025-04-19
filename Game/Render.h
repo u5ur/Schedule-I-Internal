@@ -34,11 +34,9 @@ namespace Render
 
 		void UnlockAllDoors();
 
-		void SetDealerCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj);
-
 		void SetPlayerCards(ScheduleOne::Casino::BlackjackGameController* bj);
 
-		void SetDeckCardsFaceUp(ScheduleOne::Casino::BlackjackGameController* bj);
+		void SpawnVehicle();
 	}
 
 	void UpdateSky(uint64_t a1);
@@ -49,17 +47,19 @@ namespace Render
 
 	void UpdateMoney(uint64_t a1);
 
-	void UpdateRTB(uint64_t a1);
-
 	void UpdateBJ(uint64_t a1);
 
 	void UpdateVehicle(uint64_t a1);
+
+	void UpdateLocalPlayer();
 
 	bool Init();
 
 	void RenderNPCs();
 
 	void RenderMenu();
+
+	static Unity::Camera* Camera;
 
 	static void OnGUI(uint64_t ui)
 	{
@@ -71,7 +71,14 @@ namespace Render
 			return;
 		}
 
+		Camera = Unity::Camera::GetMain();
+		if (!mem.IsValidPtr(Camera)) return;
+
+		Camera->GetViewMatrix();
+		Camera->GetLocation();
+
 		RenderNPCs();
+		UpdateLocalPlayer();
 		RenderMenu();
 
 		return;

@@ -52,6 +52,7 @@ namespace Settings
 		inline bool bAlwaysWinBj = false;
 
 		inline bool bCarFly = false;
+		inline bool bSkateboardFly = false;
 
 	}
 }
