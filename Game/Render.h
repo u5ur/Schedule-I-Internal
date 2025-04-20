@@ -45,8 +45,6 @@ namespace Render
 
 	void UpdateWeapon(uint64_t a1);
 
-	void MainMenu(uint64_t a1);
-
 	void UpdateMoney(uint64_t a1);
 
 	void UpdateBJ(uint64_t a1);

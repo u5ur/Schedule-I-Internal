@@ -80,13 +80,4 @@ namespace Hooks
 		OrigUpdateVehicle = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("LandVehicle", "Update", 0, "", "ScheduleOne.Vehicles")));
 		hook->HookCPP(func, ("Update"), ("LandVehicle"), ("ScheduleOne.Vehicles"), 0);
 	}
-
-
-	inline void (*OrigMainMenuRig)(uint64_t);
-
-	static void InitMainMenuRig(void* func)
-	{
-		OrigMainMenuRig = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("MainMenuRig", "Awake", 0, "", "ScheduleOne.UI.MainMenu")));
-		hook->HookCPP(func, ("Awake"), ("MainMenuRig"), ("ScheduleOne.UI.MainMenu"), 0);
-	}
 }
