@@ -2,7 +2,7 @@
 
 #define DEBUG true
 
-#define USE_ASSETBUNDLE true
+#define USE_ASSETBUNDLE false
 
 
 /// How to use custom chams ///
@@ -53,6 +53,7 @@ namespace Settings
 
 		inline bool bCarFly = false;
 		inline bool bSkateboardFly = false;
+		inline bool bNoClip = false;
 
 	}
 }

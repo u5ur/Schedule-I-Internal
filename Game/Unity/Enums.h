@@ -23,6 +23,13 @@ enum class FieldAttributes : int
 	ReservedMask = 38144
 };
 
+enum class AnimatorCullingMode : int
+{
+	AlwaysAnimate = 0,
+	CullUpdateTransforms = 1,
+	CullCompletely = 2,
+};
+
 enum class BindingFlags : int
 {
 	Default = 0,

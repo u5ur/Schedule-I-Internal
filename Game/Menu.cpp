@@ -53,8 +53,12 @@ void Render::RenderMenu()
 	}
 	else if (CurrentTab == 2)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"No Clip", &Settings::Exploit::bNoClip);
+		y += 25;
+
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Skateboard Fly", &Settings::Exploit::bSkateboardFly);
 		y += 25;
+
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Car Fly", &Settings::Exploit::bCarFly);
 		y += 25;
 

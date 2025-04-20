@@ -35,6 +35,13 @@ namespace Unity
 	class Sprite;
 	class SpriteRenderer;
 	class RigidBody;
+	class CharacterController;
+	class Collider;
+	class Animator;
+	class AnimationEvent;
+	class AnimationClip;
+	class RuntimeAnimatorController;
+	class AnimatorControllerParameter;
 
 #include "Enums.h"
 #include "Structs.h"
@@ -95,6 +102,42 @@ namespace Unity
 		Component* GetComponent(Type* type);
 	};
 
+	class AnimatorControllerParameter
+	{
+	public:
+		Unity::String* GetName();
+	};
+
+	class AnimationEvent
+	{
+	public:
+		AnimatorStateInfo GetStateInfo();
+	};
+
+	class AnimationClip
+	{
+	public:
+		Unity::Array<AnimationEvent*>* GetAnimationEvents(); // this is empty, it points to an array but the array is empty
+	};
+
+	class RuntimeAnimatorController
+	{
+	public:
+		Unity::Array<AnimationClip*>* GetAnimationClips();	
+	};
+
+	class Animator
+	{
+	public:
+		void Play(String* name, int layer, float time);
+		void SetCullingMode(AnimatorCullingMode mode);
+		void SetBool(String* name, bool value);
+		void SetTrigger(String* name);
+		int StringToHash(String* name);
+		RuntimeAnimatorController* GetAnimController();
+		Unity::Array<AnimatorControllerParameter*>* GetParameters();
+	};
+
 	class Transform : public Component {
 	public:
 		void SetPosition(Vector3 value);
@@ -131,6 +174,19 @@ namespace Unity
 		void SetisKinematic(bool value);
 		void SetDetectCollisions(bool value);
 		Vector4 GetRotation();
+	};
+
+	class Collider : public Component
+	{
+	public:
+		RigidBody* GetAttachedRigidbody();
+		void SetEnabled(bool value);
+	};
+
+	class CharacterController : public Collider
+	{
+	public:
+		void SetDetectCollisions(bool value);
 	};
 
 	class Screen {

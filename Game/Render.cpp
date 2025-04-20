@@ -28,25 +28,80 @@ bool Render::Init()
 
 void Render::UpdateCamera(uint64_t a1)
 {
+	static Vector3 noclipLocation{};
+	static bool wasNoClip = false;
+
 	if (Hooks::OrigUpdate)
 	{
 		Hooks::OrigUpdate(a1);
 
-		if (!Settings::Aimbot::bAimbot) return;
-
 		auto PlayerCamera = (ScheduleOne::PlayerScripts::PlayerCamera*)a1;
 		if (!mem.IsValidPtr(PlayerCamera)) return;
 
-		PlayerCamera->SetCameraMode(ScheduleOne::PlayerScripts::PlayerCamera::ECameraMode::Default);
+		auto LocalPlayer = ScheduleOne::PlayerScripts::Player::GetLocalPlayer();
+		if (!mem.IsValidPtr(LocalPlayer)) return;
 
-		if (mem.IsValidPtr(ClosestNPC) &&
-			mem.GetInput()->bIsKeyDown(VK_RBUTTON))
+		auto Character = LocalPlayer->GetCharacterController();
+		if (!mem.IsValidPtr(Character)) return;
+
+		auto Camera = PlayerCamera->GetCamera();
+		if (!mem.IsValidPtr(Camera)) return;
+
+		auto CameraTransform = Camera->GetTransform();
+		if (!mem.IsValidPtr(CameraTransform)) return;
+
+		auto Forward = CameraTransform->GetForward();
+		auto Right = CameraTransform->GetRight();
+		auto Up = Vector3{ 0.0f, 1.0f, 0.0f };
+
+		bool& bNoClip = Settings::Exploit::bNoClip;
+
+		if (bNoClip)
 		{
-			Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
-			PlayerCamera->SetLookAt(Head3d, 0);
+			if (!wasNoClip)
+				noclipLocation = CameraTransform->GetPosition(); // reliable init position
+
+			float speed = 0.5f;
+			if (mem.GetInput()->bIsKeyDown(VK_SHIFT)) speed *= 2.0f;
+
+			if (mem.GetInput()->bIsKeyDown(0x57)) noclipLocation += Forward * speed;  // W
+			if (mem.GetInput()->bIsKeyDown(0x53)) noclipLocation -= Forward * speed;  // S
+			if (mem.GetInput()->bIsKeyDown(0x41)) noclipLocation -= Right * speed;    // A
+			if (mem.GetInput()->bIsKeyDown(0x44)) noclipLocation += Right * speed;    // D
+			if (mem.GetInput()->bIsKeyDown(VK_SPACE)) noclipLocation += Up * speed;
+			if (mem.GetInput()->bIsKeyDown(VK_CONTROL)) noclipLocation -= Up * speed;
+
+			Character->SetEnabled(false);
+			Character->GetTransform()->SetPosition(noclipLocation);
+		}
+		else
+		{
+			if (wasNoClip)
+			{
+				Character->SetEnabled(true);
+				Character->GetTransform()->SetPosition(noclipLocation);
+			}
+			else if (!LocalPlayer->GetSkateboard())
+			{
+				Character->SetEnabled(true);
+			}
+		}
+
+		wasNoClip = bNoClip;
+
+		if (Settings::Aimbot::bAimbot)
+		{
+			if (mem.IsValidPtr(ClosestNPC) &&
+				mem.GetInput()->bIsKeyDown(VK_RBUTTON))
+			{
+				Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
+				PlayerCamera->SetLookAt(Head3d, 0);
+			}
 		}
 	}
 }
+
+
 
 void Render::UpdateMoney(uint64_t a1)
 {
@@ -104,7 +159,7 @@ void Render::UpdateSky(uint64_t a1)
 
 		if (!Settings::Visuals::bCustomSky) return;
 
-		auto TimeOfDayController = Funly::SkyStudio::TimeOfDayController::GetTimeOfDayController();
+		auto TimeOfDayController = mem.Read<Funly::SkyStudio::TimeOfDayController*>(a1 + 0x30);
 		if (!mem.IsValidPtr(TimeOfDayController)) return;
 
 		auto SkyController = TimeOfDayController->GetSkyMaterialController();
@@ -150,8 +205,6 @@ void Render::UpdateVehicle(uint64_t a1)
 
 		if (!mem.IsValidPtr(Vehicle)) return;
 		if (!Vehicle->LocalPlayerIsDriver()) return;
-
-		Vehicle->SetChams(Shader, { 1, 1, 1, 1 });
 
 		auto rb = Vehicle->GetRigidBody();
 		if (!mem.IsValidPtr(rb)) return;

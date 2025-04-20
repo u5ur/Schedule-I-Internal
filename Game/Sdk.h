@@ -118,7 +118,11 @@ namespace ScheduleOne
 			{
 			public:
 
-				// No Static Fields
+				Unity::Animator* GetAnimator()
+				{
+					if (!mem.IsValidPtr(this)) return nullptr;
+					return mem.Read<Unity::Animator*>(this + 0x38);
+				}
 
 				Unity::Array<Unity::Transform*>* GetTransforms()
 				{
@@ -145,7 +149,6 @@ namespace ScheduleOne
 		{
 		public:
 
-			// No Static Fields
 
 			AvatarFramework::Animation::AvatarAnimation* GetAvatarAnimation()
 			{
@@ -903,9 +906,6 @@ namespace ScheduleOne
 		{
 		public:
 
-			  // Static Fields //
-			//------------------//
-
 			static Unity::List<NPC*>* GetNPCRegistry()
 			{
 				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58233472);
@@ -978,7 +978,7 @@ namespace ScheduleOne
 
 			static void SetWalkSpeed(float value)
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58301896);
 				if (!TypeInfo) return;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -989,7 +989,7 @@ namespace ScheduleOne
 
 			static void SetSprintMultiplier(float value)
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58301896);
 				if (!TypeInfo) return;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -1000,7 +1000,7 @@ namespace ScheduleOne
 
 			static void SetJumpMultiplier(float value)
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58301896);
 				if (!TypeInfo) return;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -1011,7 +1011,7 @@ namespace ScheduleOne
 
 			static void SetGravityMultiplier(float value)
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300688);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58301896);
 				if (!TypeInfo) return;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -1031,6 +1031,12 @@ namespace ScheduleOne
 				Vehicle = 1,
 				Skateboard = 2,
 			};
+
+			Unity::Camera* GetCamera()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Camera*>(this + 0x70);
+			}
 
 			void SetCameraMode(ECameraMode mode)
 			{
@@ -1068,9 +1074,6 @@ namespace ScheduleOne
 		{
 		public:
 
-			// Static Fields //
-		   //------------------//
-
 			static Player* GetLocalPlayer()
 			{
 				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300024);
@@ -1092,9 +1095,6 @@ namespace ScheduleOne
 
 				return mem.Read<Unity::List<Player*>*>(StaticFields + 0x18);
 			}
-
-			  // Fields //
-			//-----------//
 
 			AvatarFramework::Avatar* GetAvatar()
 			{
@@ -1131,6 +1131,12 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Skating::Skateboard*>(this + 0x240);
+			}
+
+			Unity::CharacterController* GetCharacterController()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::CharacterController*>(this + 0x1A8);
 			}
 			
 			bool IsSkating()
@@ -1236,8 +1242,6 @@ namespace Funly
 		{
 		public:
 
-			// No Static Fields
-
 			void SetSkyColor(Unity::Color color)
 			{
 				if (!mem.IsValidPtr(this)) return;
@@ -1275,32 +1279,38 @@ namespace Funly
 			}
 		};
 
+		class RainDownfallController
+		{
+		public:
+
+		};
+
+		class WeatherController
+		{
+		public:
+
+			RainDownfallController* GetRainController()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<RainDownfallController*>(this + 0x20);
+			}
+		};
+
 
 		class TimeOfDayController
 		{
 		public:
 
-			// Static Fields //
-		   //------------------//
-
-			static TimeOfDayController* GetTimeOfDayController()
-			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58529400);
-				if (!TypeInfo) return nullptr;
-
-				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xB8);
-				if (!StaticFields) return nullptr;
-
-				return mem.Read<TimeOfDayController*>(StaticFields + 0x0);
-			}
-
-			// Fields //
-		   //-----------//
-
 			SkyMaterialController* GetSkyMaterialController()
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<SkyMaterialController*>(this + 0x30);
+			}
+
+			WeatherController* GetWeatherController()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<WeatherController*>(this + 0x50);
 			}
 
 			float GetSkyTime()

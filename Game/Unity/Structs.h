@@ -10,6 +10,19 @@ struct RaycastHit
 	int Collider;
 };
 
+struct AnimatorStateInfo
+{
+	int m_Name; // 0x0
+	int m_Path; // 0x4
+	int m_FullPath; // 0x8
+	float m_NormalizedTime; // 0xC
+	float m_Length; // 0x10
+	float m_Speed; // 0x14
+	float m_SpeedMultiplier; // 0x18
+	int m_Tag; // 0x1C
+	int m_Loop; // 0x20
+};
+
 struct Color
 {
 	float r;
@@ -145,6 +158,13 @@ struct Array
 	T Get(uint32_t idx)
 	{
 		const auto internal_list = reinterpret_cast<uintptr_t>(this + 0x20);
+		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));
+	}
+
+	T GetValue(uint32_t idx)
+	{
+		const auto list = *reinterpret_cast<uintptr_t*>((uintptr_t)this + 0x10);
+		const auto internal_list = list + 0x20;
 		return *reinterpret_cast<T*>(internal_list + idx * sizeof(T));
 	}
 

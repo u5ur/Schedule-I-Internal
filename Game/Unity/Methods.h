@@ -10,9 +10,9 @@ namespace Methods
 	inline auto BeginGroup = reinterpret_cast<bool(*)(Rect*, GUIContent*, GUIStyle*)>(0);
 	inline auto EndGroup = reinterpret_cast<void(*)()>(0);
 	inline auto get_Texture = reinterpret_cast<Texture*(*)(Sprite*)>(0);
-	inline auto get_Rect = reinterpret_cast<Unity::Rect(*)(Sprite*)>(0);
-	inline auto DrawTexture = reinterpret_cast<void(*)(Unity::Rect, Texture*)>(0);
-	inline auto Raycast = reinterpret_cast<bool(*)(Unity::Ray, float, int, Unity::QueryTriggerInteraction)>(0);
+	inline auto get_Rect = reinterpret_cast<Rect(*)(Sprite*)>(0);
+	inline auto DrawTexture = reinterpret_cast<void(*)(Rect, Texture*)>(0);
+	inline auto Raycast = reinterpret_cast<bool(*)(Ray, float, int, QueryTriggerInteraction)>(0);
 	inline auto LoadPixelMatrix = reinterpret_cast<void(*)(float, float, float, float)>(0);
 	inline auto Contains = reinterpret_cast<bool(*)(String*, String)>(0);
 	inline auto FindObjectsOfType = reinterpret_cast<List<Object*>*(*)(Type*)>(0);
@@ -70,6 +70,18 @@ namespace Methods
 	inline auto set_detectCollisions = reinterpret_cast<void(*)(RigidBody*, bool)>(0);
 	inline auto set_position = reinterpret_cast<void(*)(Transform*, Vector3)>(0);
 	inline auto LookAt = reinterpret_cast<void(*)(Transform*, Vector3)>(0);
+	inline auto set_cullingMode = reinterpret_cast<void(*)(Animator*, AnimatorCullingMode)>(0);
+	inline auto	get_parameters = reinterpret_cast<Array<AnimatorControllerParameter*>*(*)(Animator*)>(0);
+	inline auto SetBool = reinterpret_cast<void(*)(Animator*, String*, bool)>(0);
+	inline auto SetTrigger = reinterpret_cast<void(*)(Animator*, String*)>(0);
+	inline auto StringToHash = reinterpret_cast<int(*)(Animator*, String*)>(0);
+	inline auto get_runtimeAnimatorController = reinterpret_cast<RuntimeAnimatorController*(*)(Animator*)>(0);
+	inline auto get_animationClips = reinterpret_cast<Array<AnimationClip*>*(*)(RuntimeAnimatorController*)>(0);
+	inline auto	get_events = reinterpret_cast<Array<AnimationEvent*>*(*)(AnimationClip*)>(0);
+	inline auto Play = reinterpret_cast<void(*)(Animator*, String*, int, float)>(0);
+	inline auto cset_detectCollisions = reinterpret_cast<void(*)(CharacterController*, bool)>(0);
+	inline auto get_attachedRigidbody = reinterpret_cast<RigidBody*(*)(Collider*)>(0);
+	inline auto set_enabled = reinterpret_cast<void(*)(Collider*, bool)>(0);
 
 	void Init();
 }
