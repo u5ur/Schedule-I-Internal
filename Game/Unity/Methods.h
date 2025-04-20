@@ -69,7 +69,7 @@ namespace Methods
 	inline auto set_isKinematic = reinterpret_cast<void(*)(RigidBody*, bool)>(0);
 	inline auto set_detectCollisions = reinterpret_cast<void(*)(RigidBody*, bool)>(0);
 	inline auto set_position = reinterpret_cast<void(*)(Transform*, Vector3)>(0);
-
+	inline auto LookAt = reinterpret_cast<void(*)(Transform*, Vector3)>(0);
 
 	void Init();
 }

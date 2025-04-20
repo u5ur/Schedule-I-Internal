@@ -67,6 +67,7 @@ void Methods::Init() {
 	set_velocity = reinterpret_cast<void(*)(RigidBody*, Vector3)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_velocity", 1, "", "UnityEngine")));
 	set_rotation = reinterpret_cast<void(*)(RigidBody*, Vector4)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_rotation", 1, "", "UnityEngine")));
 	set_position = reinterpret_cast<void(*)(Transform*, Vector3)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Transform", "set_position", 1, "", "UnityEngine")));
+	LookAt = reinterpret_cast<void(*)(Transform*, Vector3)>(mem.GameAssembly + 0x29D1360);
 	get_rotation = reinterpret_cast<Vector4(*)(RigidBody*)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "get_rotation", 1, "", "UnityEngine")));
 	set_detectCollisions = reinterpret_cast<void(*)(RigidBody*, bool)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_detectCollisions", 1, "", "UnityEngine")));
 	set_isKinematic = reinterpret_cast<void(*)(RigidBody*, bool)>(*reinterpret_cast<DWORD64*>(il2cpp::Method("Rigidbody", "set_isKinematic", 1, "", "UnityEngine")));
@@ -225,6 +226,11 @@ Vector3 Transform::GetUp() {
 void Transform::SetPosition(Vector3 value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_position(this, value);
+}
+
+void Transform::LookAt(Vector3 value) {
+	if (!mem.IsValidPtr(this)) return;
+	Methods::LookAt(this, value);
 }
 
 void GameObject::InternalCreateGameObject(GameObject* self, String name) {

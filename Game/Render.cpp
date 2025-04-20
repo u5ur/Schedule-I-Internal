@@ -1,4 +1,4 @@
-#include "Render.h"
+﻿#include "Render.h"
 
 bool Render::Init()
 {
@@ -35,9 +35,11 @@ void Render::UpdateCamera(uint64_t a1)
 		if (!Settings::Aimbot::bAimbot) return;
 
 		auto PlayerCamera = (ScheduleOne::PlayerScripts::PlayerCamera*)a1;
+		if (!mem.IsValidPtr(PlayerCamera)) return;
+
+		PlayerCamera->SetCameraMode(ScheduleOne::PlayerScripts::PlayerCamera::ECameraMode::Default);
 
 		if (mem.IsValidPtr(ClosestNPC) &&
-			mem.IsValidPtr(PlayerCamera) &&
 			mem.GetInput()->bIsKeyDown(VK_RBUTTON))
 		{
 			Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
@@ -189,7 +191,6 @@ void Render::UpdateLocalPlayer()
 {
 	auto LocalPlayer = ScheduleOne::PlayerScripts::Player::GetLocalPlayer();
 	if (!mem.IsValidPtr(LocalPlayer)) return;
-
 
 	if (Settings::Exploit::bSkateboardFly)
 	{

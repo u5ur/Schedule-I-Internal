@@ -7,6 +7,14 @@ namespace ScheduleOne
 	namespace PlayerScripts
 	{
 		class PlayerCamera;
+		class PlayerInventory;
+		class Player;
+	}
+
+	namespace Skating
+	{
+		class Skateboard;
+		class Skateboard_Equippable;
 	}
 
 	namespace Equipping
@@ -21,7 +29,14 @@ namespace ScheduleOne
 
 	namespace Map
 	{
-		class DealerShip;
+		class Dealership;
+	}
+
+	namespace ItemFramework
+	{
+		class ItemDefinition;
+		class ItemInstance;
+		class ItemSlot;
 	}
 
 	namespace Casino
@@ -41,10 +56,13 @@ namespace Sdk
 	{
 		inline auto Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(0);
 		inline auto LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(0);
+		inline auto set_CameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(0);
+		inline auto SetCameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(0);
+		inline auto set_ViewingAvatar = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(0);
 		inline auto ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(0);
 		inline auto ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(0);
 		inline auto set_CurrentSymbol = reinterpret_cast<void(*)(ScheduleOne::Casino::SlotReel*, uint32_t)>(0);
-		inline auto GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(0);
+		inline auto GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite * (*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(0);
 		inline auto get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
 		inline auto get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(0);
 		inline auto set_IsFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, bool)>(0);
@@ -53,27 +71,38 @@ namespace Sdk
 		inline auto SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(0);
 		inline auto SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
 		inline auto SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(0);
-		inline auto spawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::DealerShip*, Unity::String*)>(0);
-		inline auto GetQuestionsAndAnswers = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::RTBGameController*, uint32_t, Unity::String*&, Unity::Array<Unity::String*>*&)>(0);
+		inline auto SpawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::Dealership*, Unity::String*)>(0);
+		inline auto GetDefaultInstance = reinterpret_cast<ScheduleOne::ItemFramework::ItemInstance*(*)(ScheduleOne::ItemFramework::ItemDefinition*, int)>(0);
+		inline auto set_ItemInstance = reinterpret_cast<void(*)(ScheduleOne::ItemFramework::ItemSlot*, ScheduleOne::ItemFramework::ItemInstance*)>(0);
+		inline auto AddItemToInventory = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerInventory*, ScheduleOne::ItemFramework::ItemInstance*)>(0);
+		inline auto set_ActiveSkateboard = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard_Equippable*, ScheduleOne::Skating::Skateboard*)>(0);
+		inline auto set_Rider = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard*, ScheduleOne::PlayerScripts::Player*)>(0);
 
 		static void Init()
 		{
-			Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(mem.GameAssembly + 0x84A270);
-			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.GameAssembly + 0x6A6880);
-			ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(mem.GameAssembly + 0x945C30);
-			ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(mem.GameAssembly + 0x9478D0);
-			set_CurrentSymbol = reinterpret_cast<void(*)(ScheduleOne::Casino::SlotReel*, uint32_t)>(mem.GameAssembly + 0x460AA0);
-			GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite*(*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(mem.GameAssembly + 0x780590);
-			get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x4608D0);
-			get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.GameAssembly + 0x460A60);
-			GetQuestionsAndAnswers = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::RTBGameController*, uint32_t, Unity::String*&, Unity::Array<Unity::String*>*&)>(mem.GameAssembly + 0x781E20);
-			set_IsFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, bool)>(mem.GameAssembly + 0x49C3D0);
-			SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(mem.GameAssembly + 0x75F630);
-			SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75E190);
-			set_Suit = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460AA0);
-			set_Value = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.GameAssembly + 0x460B20);
-			spawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::DealerShip*, Unity::String*)>(mem.GameAssembly + 0x9DAF70);
-			SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.GameAssembly + 0x75F880);
+			Fire = reinterpret_cast<void(*)(ScheduleOne::Equipping::Equippable_RangedWeapon*)>(mem.Read<uint64_t>(il2cpp::Method("Equippable_RangedWeapon", "Fire", 0, "", "ScheduleOne.Equipping")));
+			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "LookAt", 2, "", "ScheduleOne.PlayerScripts")));
+			set_CameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "set_CameraMode", 1, "", "ScheduleOne.PlayerScripts")));
+			SetCameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "SetCameraMode", 1, "", "ScheduleOne.PlayerScripts")));
+			set_ViewingAvatar = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "set_ViewingAvatar", 1, "", "ScheduleOne.PlayerScripts")));
+			ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "ChangeCashBalance", 3, "", "ScheduleOne.Money")));
+			ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "ReceiveOnlineTransaction", 4, "", "ScheduleOne.Money")));
+			set_CurrentSymbol = reinterpret_cast<void(*)(ScheduleOne::Casino::SlotReel*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("SlotReel", "set_CurrentSymbol", 1, "", "ScheduleOne.Casino")));
+			GetCardSprite = reinterpret_cast<ScheduleOne::Casino::CardSprite * (*)(ScheduleOne::Casino::PlayingCard*, uint32_t, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "GetCardSprite", 2, "", "ScheduleOne.Casino")));
+			get_Suit = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "get_Suit", 0, "", "ScheduleOne.Casino")));
+			get_Value = reinterpret_cast<uint32_t(*)(ScheduleOne::Casino::PlayingCard*)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "get_Value", 0, "", "ScheduleOne.Casino")));
+			set_IsFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, bool)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "set_IsFaceUp", 1, "", "ScheduleOne.Casino")));
+			SendCardFaceUp = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, bool)>(mem.Read<uint64_t>(il2cpp::Method("CardController", "SendCardFaceUp", 2, "", "ScheduleOne.Casino")));
+			SetCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("CardController", "SetCardValue", 3, "", "ScheduleOne.Casino")));
+			set_Suit = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "set_Suit", 1, "", "ScheduleOne.Casino")));
+			set_Value = reinterpret_cast<void(*)(ScheduleOne::Casino::PlayingCard*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayingCard", "set_Value", 1, "", "ScheduleOne.Casino")));
+			SpawnVehicle = reinterpret_cast<void(*)(ScheduleOne::Map::Dealership*, Unity::String*)>(mem.Read<uint64_t>(il2cpp::Method("Dealership", "SpawnVehicle", 1, "", "ScheduleOne.Map")));
+			SendCardValue = reinterpret_cast<void(*)(ScheduleOne::Casino::CardController*, Unity::String*, uint32_t, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("CardController", "SendCardValue", 3, "", "ScheduleOne.Casino")));
+			GetDefaultInstance = reinterpret_cast<ScheduleOne::ItemFramework::ItemInstance * (*)(ScheduleOne::ItemFramework::ItemDefinition*, int)>(mem.Read<uint64_t>(il2cpp::Method("ItemDefinition", "GetDefaultInstance", 1, "", "ScheduleOne.ItemFramework")));
+			set_ItemInstance = reinterpret_cast<void(*)(ScheduleOne::ItemFramework::ItemSlot*, ScheduleOne::ItemFramework::ItemInstance*)>(mem.Read<uint64_t>(il2cpp::Method("ItemSlot", "set_ItemInstance", 1, "", "ScheduleOne.ItemFramework")));
+			AddItemToInventory = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerInventory*, ScheduleOne::ItemFramework::ItemInstance*)>(mem.Read<uint64_t>(il2cpp::Method("PlayerInventory", "AddItemToInventory", 1, "", "ScheduleOne.PlayerScripts")));
+			set_ActiveSkateboard = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard_Equippable*, ScheduleOne::Skating::Skateboard*)>(mem.Read<uint64_t>(il2cpp::Method("Skateboard_Equippable", "set_ActiveSkateboard", 1, "", "ScheduleOne.Skating")));
+			set_Rider = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard*, ScheduleOne::PlayerScripts::Player*)>(mem.Read<uint64_t>(il2cpp::Method("Skateboard", "set_Rider", 1, "", "ScheduleOne.Skating")));
 
 		}
 	}
@@ -337,12 +366,6 @@ namespace ScheduleOne
 				return mem.Read<EStage>(this + 0x178);
 			}
 
-			void GetQuestionsAndAnswers(EStage stage, Unity::String*& question, Unity::Array<Unity::String*>*& answers)
-			{
-				if (!mem.IsValidPtr(this)) return;
-				Sdk::Methods::GetQuestionsAndAnswers(this, stage, question, answers);
-			}
-
 			Unity::List<PlayingCard::CardData>* GetDrawnCards()
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
@@ -529,7 +552,7 @@ namespace ScheduleOne
 			}
 		};
 
-		class DealerShip
+		class Dealership
 		{
 		public:
 
@@ -542,14 +565,14 @@ namespace ScheduleOne
 			void SpawnVehicle(Unity::String* carid)
 			{
 				if (!mem.IsValidPtr(this)) return;
-				Sdk::Methods::spawnVehicle(this, carid);
+				Sdk::Methods::SpawnVehicle(this, carid);
 			}
 
 			void SetSpawnPoints(Vector3 spawn_point)
 			{
 				if (!mem.IsValidPtr(this)) return;
 
-				auto SpawnPoints = mem.Read<Unity::Array<Unity::Transform*>*>(this + 0x20);
+				auto SpawnPoints = GetSpawnPoints();
 				if (!mem.IsValidPtr(SpawnPoints)) return;
 
 				auto Size = SpawnPoints->GetSize();
@@ -563,7 +586,6 @@ namespace ScheduleOne
 					SpawnPoint->SetPosition(spawn_point);
 				}
 			}
-
 		};
 	}
 
@@ -672,6 +694,12 @@ namespace ScheduleOne
 				return mem.Read<float>(this + 0x118);
 			}
 
+			void SetRider(PlayerScripts::Player* player)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_Rider(this, player);
+			}
+
 			void SetCurrentSpeed(float speed)
 			{
 				if (!mem.IsValidPtr(this)) return;
@@ -684,14 +712,32 @@ namespace ScheduleOne
 				return mem.Read<Unity::RigidBody*>(this + 0x130);
 			}
 		};
+
+		class Skateboard_Equippable
+		{
+		public:
+
+			void SetSkateboard(Skating::Skateboard* skate)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_ActiveSkateboard(this, skate);
+			}
+		};
 	}
 
 	namespace ItemFramework
 	{
+		class ItemInstance;
 
 		class ItemDefinition
 		{
 		public:
+
+			ItemInstance* GetDefaultInstance(int quanity)
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				Sdk::Methods::GetDefaultInstance(this, quanity);
+			}
 
 			Unity::String* GetName()
 			{
@@ -715,6 +761,17 @@ namespace ScheduleOne
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<ItemDefinition*>(this + 0x10);
 			}
+
+			void Construct(ItemDefinition* definition, int quantity)
+			{
+				if (!mem.IsValidPtr(this) || !mem.IsValidPtr(definition)) return;
+
+				using ItemInstanceCtor_t = void(*)(ItemInstance* _this, ItemDefinition* def, int32_t quantity);
+
+				static const ItemInstanceCtor_t ctor = (ItemInstanceCtor_t)(mem.GameAssembly + 0x850F30);
+
+				ctor(this, definition, quantity);
+			}
 		};
 
 		class ItemSlot
@@ -725,6 +782,12 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<ItemInstance*>(this + 0x10);
+			}
+
+			void SetItemInstance(ItemInstance* value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_ItemInstance(this, value);
 			}
 		};
 	}
@@ -845,7 +908,7 @@ namespace ScheduleOne
 
 			static Unity::List<NPC*>* GetNPCRegistry()
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58232248);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58233472);
 				if (!TypeInfo) return nullptr;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -856,7 +919,7 @@ namespace ScheduleOne
 
 			static NPC* GetNpcByName(const wchar_t* name)
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58232248);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58233472);
 				if (!TypeInfo) return nullptr;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -962,10 +1025,41 @@ namespace ScheduleOne
 		{
 		public:
 
+			enum ECameraMode : uint32_t
+			{
+				Default = 0,
+				Vehicle = 1,
+				Skateboard = 2,
+			};
+
+			void SetCameraMode(ECameraMode mode)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::SetCameraMode(this, mode);
+				Sdk::Methods::set_CameraMode(this, mode);
+			}
+
 			void SetLookAt(Vector3 pos, float duration)
 			{
 				if (!mem.IsValidPtr(this)) return;
 				Sdk::Methods::LookAt(this, pos, duration);
+			}
+
+			void SetViewingAvatar(bool value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_ViewingAvatar(this, value);
+			}
+		};
+
+		class PlayerInventory
+		{
+		public:
+
+			void AddItemToInventory(ItemFramework::ItemInstance* item)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::AddItemToInventory(this, item);
 			}
 		};
 
@@ -979,7 +1073,7 @@ namespace ScheduleOne
 
 			static Player* GetLocalPlayer()
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58298816);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300024);
 				if (!TypeInfo) return nullptr;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -990,7 +1084,7 @@ namespace ScheduleOne
 
 			static Unity::List<Player*>* GetPlayerList()
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58298816);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58300024);
 				if (!TypeInfo) return nullptr;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xb8);
@@ -1076,6 +1170,41 @@ namespace ScheduleOne
 		};
 	}
 
+
+	class Registry
+	{
+	public:
+
+		static class ItemRegister
+		{
+		public:
+
+			Unity::String* GetID()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::String*>(this + 0x10);
+			}
+
+			Unity::String* GetAssetPath()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::String*>(this + 0x18);
+			}
+
+			ItemFramework::ItemDefinition* GetItemDefinition()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<ItemFramework::ItemDefinition*>(this + 0x20);
+			}
+		};
+
+		Unity::List<ItemRegister*>* GetItemRegistry()
+		{
+			if (!mem.IsValidPtr(this)) return nullptr;
+			return mem.Read<Unity::List<ItemRegister*>*>(this + 0x30);
+		}
+	};
+
 	enum Bone : int
 	{
 		Head = 0,
@@ -1156,7 +1285,7 @@ namespace Funly
 
 			static TimeOfDayController* GetTimeOfDayController()
 			{
-				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58528016);
+				uint64_t TypeInfo = mem.Read<uint64_t>(mem.GameAssembly + 58529400);
 				if (!TypeInfo) return nullptr;
 
 				uint64_t StaticFields = mem.Read<uint64_t>(TypeInfo + 0xB8);

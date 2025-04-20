@@ -87,7 +87,7 @@ void Render::helper::SpawnVehicle()
 	auto JeremyNPC = ScheduleOne::NPCs::NPCManager::GetNpcByName(L"Jeremy");
 	if (!mem.IsValidPtr(JeremyNPC)) return;
 
-	auto DealerShip = mem.Read<ScheduleOne::Map::DealerShip*>(JeremyNPC + 0x2d0);
+	auto DealerShip = mem.Read<ScheduleOne::Map::Dealership*>(JeremyNPC + 0x2d0);
 	if (!DealerShip) return;
 
 	DealerShip->SetSpawnPoints(Vector3(Camera->Location.x + 5, Camera->Location.y, Camera->Location.z));

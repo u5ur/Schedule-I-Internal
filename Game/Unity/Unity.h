@@ -98,6 +98,7 @@ namespace Unity
 	class Transform : public Component {
 	public:
 		void SetPosition(Vector3 value);
+		void LookAt(Vector3 value);
 		Vector3 GetForward();
 		Vector3 GetUp();
 		Vector3 GetRight();
