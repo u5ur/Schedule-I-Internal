@@ -30,6 +30,9 @@ namespace Settings
 
 	namespace Visuals
 	{
+		inline bool bDistance = true;
+		inline bool bName = true;
+		inline bool bBox = true;
 		inline bool bSkeleton = true;
 		inline bool bChams = true;
 		inline bool bInventory = true;
@@ -55,6 +58,9 @@ namespace Settings
 		inline bool bCarFly = false;
 		inline bool bSkateboardFly = false;
 		inline bool bNoClip = false;
+		inline bool bThirdPerson = false;
+		inline bool bSpinBot = false;
+
 
 	}
 }

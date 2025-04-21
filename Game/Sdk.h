@@ -88,6 +88,11 @@ namespace Sdk
 		inline auto set_ActiveSkateboard = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard_Equippable*, ScheduleOne::Skating::Skateboard*)>(0);
 		inline auto set_Rider = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard*, ScheduleOne::PlayerScripts::Player*)>(0);
 		inline auto get_instance = reinterpret_cast<Funly::SkyStudio::TimeOfDayController*(*)()>(0);
+		inline auto ViewAvatar = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(0);
+		inline auto set_canLook = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(0);
+		inline auto SetCanLook = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(0);
+		inline auto FreeMouse = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(0);
+		inline auto RotateCamera = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(0);
 
 		static void Init()
 		{
@@ -95,6 +100,11 @@ namespace Sdk
 			LookAt = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, Vector3, float)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "LookAt", 2, "", "ScheduleOne.PlayerScripts")));
 			set_CameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "set_CameraMode", 1, "", "ScheduleOne.PlayerScripts")));
 			SetCameraMode = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, uint32_t)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "SetCameraMode", 1, "", "ScheduleOne.PlayerScripts")));
+			ViewAvatar = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "ViewAvatar", 0, "", "ScheduleOne.PlayerScripts")));
+			RotateCamera = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "RotateCamera", 0, "", "ScheduleOne.PlayerScripts")));
+			FreeMouse = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "FreeMouse", 0, "", "ScheduleOne.PlayerScripts")));
+			set_canLook = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "set_canLook", 1, "", "ScheduleOne.PlayerScripts")));
+			SetCanLook = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "SetCanLook", 1, "", "ScheduleOne.PlayerScripts")));
 			set_ViewingAvatar = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerCamera*, bool)>(mem.Read<uint64_t>(il2cpp::Method("PlayerCamera", "set_ViewingAvatar", 1, "", "ScheduleOne.PlayerScripts")));
 			ChangeCashBalance = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, float, bool, bool)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "ChangeCashBalance", 3, "", "ScheduleOne.Money")));
 			ReceiveOnlineTransaction = reinterpret_cast<void(*)(ScheduleOne::Money::MoneyManager*, Unity::String*, float, float, Unity::String*)>(mem.Read<uint64_t>(il2cpp::Method("MoneyManager", "ReceiveOnlineTransaction", 4, "", "ScheduleOne.Money")));
@@ -174,6 +184,12 @@ namespace ScheduleOne
 				return mem.Read<Unity::Array<Unity::Renderer*>*>(this + 0x30);
 			}
 
+			Unity::Transform* GetBodyContainer()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::Transform*>(this + 0x58);
+			}
+
 			void SetChams(Unity::Shader* shader, Unity::Color color)
 			{
 				if (!mem.IsValidPtr(this)) return;
@@ -187,7 +203,13 @@ namespace ScheduleOne
 				for (int i = 0; i < Size; i++)
 				{
 					auto Renderer = Renderers->Get(i);
+					if (!mem.IsValidPtr(Renderer)) continue;
+
+					Renderer->SetallowOcclusionWhenDynamic(false);
+					Renderer->SetEnabled(true);
+
 					auto material = Renderer->GetMaterial();
+					if (!mem.IsValidPtr(material)) continue;
 
 				#if USE_ASSETBUNDLE
 					Unity::Bundles::HologramMaterial->SetShader(Unity::Bundles::HologramShader);
@@ -627,6 +649,30 @@ namespace ScheduleOne
 	namespace Equipping
 	{
 
+		class Equippable
+		{
+		public:
+
+		};
+
+		class Equippable_StorableItem : public Equippable
+		{
+		public:
+
+		};
+
+		class Equippable_Viewmodel : public Equippable_StorableItem
+		{
+		public:
+
+		};
+
+		class Equippable_AvatarViewmodel : public Equippable_Viewmodel
+		{
+		public:
+
+		};
+
 		class AvatarEquippable
 		{
 		public:
@@ -638,7 +684,7 @@ namespace ScheduleOne
 			}
 		};
 
-		class Equippable_RangedWeapon
+		class Equippable_RangedWeapon : public Equippable_AvatarViewmodel
 		{
 		public:
 
@@ -764,6 +810,13 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::Sprite*>(this + 0x30);
+			}
+
+			Equipping::Equippable* GetEquippable()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Equipping::Equippable*>(this + 0x60);
+
 			}
 		};
 
@@ -898,6 +951,23 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<Unity::String*>(this + 0x128);
+			}
+
+			const wchar_t* GetFullName() 
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+
+				auto first = GetFirstName();
+				if (!mem.IsValidPtr(first)) return nullptr;
+				if (!HasLastName()) return first->str;
+
+				auto last = GetLastName();
+				if (!mem.IsValidPtr(last)) return first->str;
+
+				size_t len = wcslen(first->str) + wcslen(last->str) + 2;
+				auto full = new wchar_t[len];
+				swprintf(full, len, L"%s %s", first->str, last->str);
+				return full;
 			}
 
 			bool IsVisible()
@@ -1074,6 +1144,12 @@ namespace ScheduleOne
 				Sdk::Methods::set_CameraMode(this, mode);
 			}
 
+			Unity::Transform* GetViewAvatarTransform()
+			{
+				if (!mem.IsValidPtr(this)) return  nullptr;
+				return mem.Read<Unity::Transform*>(this + 0x98);
+			}
+
 			void SetLookAt(Vector3 pos, float duration)
 			{
 				if (!mem.IsValidPtr(this)) return;
@@ -1084,6 +1160,30 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return;
 				Sdk::Methods::set_ViewingAvatar(this, value);
+			}
+
+			void ViewAvatar()
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::ViewAvatar(this);
+			}
+
+			void SetCanLook(bool value)
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::set_canLook(this, value);
+			}
+
+			void RotateCamera()
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::RotateCamera(this);
+			}
+
+			void FreeMouse()
+			{
+				if (!mem.IsValidPtr(this)) return;
+				Sdk::Methods::FreeMouse(this);
 			}
 		};
 
@@ -1303,7 +1403,7 @@ namespace Funly
 				if (shader == Unity::Bundles::StarNestShader) return;
 
 				Unity::Bundles::StarNestMaterial->SetShader(Unity::Bundles::StarNestShader);
-				Unity::Bundles::StarNestMaterial->SetColor((L"_Color"), color);
+				Unity::Bundles::StarNestMaterial->SetColor(L"_Color", Unity::Color{ 1.0f, 0.0f, 1.0f, 1.0f }); // Pink
 				set_SkyboxMaterial(this, Unity::Bundles::StarNestMaterial);
 			}
 		};

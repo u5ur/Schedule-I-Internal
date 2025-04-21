@@ -15,6 +15,10 @@ namespace Render
 
 		void DrawFilledRect(Unity::Rect rect, Unity::Color color, float round);
 
+		void DrawString(Unity::Rect pos, Unity::String text, Unity::Color clr, bool centered = false, float font_size = 12);
+
+		void DrawRect(Unity::Rect rect, Unity::Color color, float round = 1, float thickness = 1);
+
 		bool Button(Unity::Rect rect, Unity::Color color, Unity::String text, float round);
 
 		void SliderInt(Unity::Rect rect, Unity::String text, int* value, int min, int max);
@@ -37,8 +41,11 @@ namespace Render
 		void SetPlayerCards(ScheduleOne::Casino::BlackjackGameController* bj);
 
 		void SpawnVehicle();
+
+		void DrawAvatarBox(Vector2 head2d, Vector2 root2d, Unity::Color color);
 	}
 
+	inline bool IsPaused = false;
 
 	void UpdateSky(uint64_t a1);
 

@@ -56,6 +56,13 @@ void Render::helper::DrawSkeleton(ScheduleOne::AvatarFramework::Animation::Avata
 	UI::DrawLine(l_foot, l_toe, color);
 }
 
+void Render::helper::DrawAvatarBox(Vector2 head2d, Vector2 root2d, Unity::Color color)
+{
+	float box_height = abs(head2d.y - root2d.y);
+	float box_width = box_height * 0.5f;
+	UI::DrawRect({ head2d.x - (box_width / 2), head2d.y, box_width, box_height }, color);
+}
+
 bool Render::helper::IsVisible(Unity::Camera* cam, Vector3 target_pos)
 {
 	Vector3 Direction = (target_pos - cam->Location);

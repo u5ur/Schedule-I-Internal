@@ -84,6 +84,12 @@ namespace Methods
 	inline auto set_enabled = reinterpret_cast<void(*)(Collider*, bool)>(0);
 	inline auto set_radius = reinterpret_cast<void(*)(CapsuleCollider*, float)>(0);
 	inline auto set_center = reinterpret_cast<void(*)(CapsuleCollider*, Vector3)>(0);
+	inline auto get_delta = reinterpret_cast<Vector2(*)(Event*)>(0);
+	inline auto tset_rotation = reinterpret_cast<void(*)(Transform*, Vector4)>(0);
+	inline auto tget_rotation = reinterpret_cast<Vector4(*)(Transform*)>(0);
+	inline auto get_eulerAngles = reinterpret_cast<Vector3(*)(Transform*)>(0);
+	inline auto set_allowOcclusionWhenDynamic = reinterpret_cast<void(*)(Renderer*, bool)>(0);
+	inline auto rset_enabled = reinterpret_cast<void(*)(Renderer*, bool)>(0);
 
 	void Init();
 }

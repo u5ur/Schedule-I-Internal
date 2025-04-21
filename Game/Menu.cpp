@@ -45,6 +45,12 @@ void Render::RenderMenu()
 	}
 	else if (CurrentTab == 1)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Box", &Settings::Visuals::bBox);
+		y += 25;
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Name", &Settings::Visuals::bName);
+		y += 25;
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Distance", &Settings::Visuals::bDistance);
+		y += 25;
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Skeleton", &Settings::Visuals::bSkeleton);
 		y += 25;
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Chams", &Settings::Visuals::bChams);
@@ -55,7 +61,13 @@ void Render::RenderMenu()
 	}
 	else if (CurrentTab == 2)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Spin Bot", &Settings::Exploit::bSpinBot);
+		y += 25;
+
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"No Clip", &Settings::Exploit::bNoClip);
+		y += 25;
+
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Third Person", &Settings::Exploit::bThirdPerson);
 		y += 25;
 
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Skateboard Fly", &Settings::Exploit::bSkateboardFly);

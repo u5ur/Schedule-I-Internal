@@ -54,12 +54,25 @@ void Render::UpdateCamera(uint64_t a1)
 		auto Right = CameraTransform->GetRight();
 		auto Up = Vector3{ 0.0f, 1.0f, 0.0f };
 
+		if (mem.GetInput()->bKeyPressed(VK_ESCAPE))
+		{
+			Settings::Exploit::bThirdPerson = false;
+		}
+
+		if (Settings::Exploit::bThirdPerson)
+		{
+			PlayerCamera->GetViewAvatarTransform()->SetPosition(Character->GetTransform()->GetPosition() + (-Forward * 4.0f + Up * 1.5f));
+			PlayerCamera->RotateCamera();
+			PlayerCamera->ViewAvatar();
+			PlayerCamera->SetCanLook(true);
+		}
+
 		bool& bNoClip = Settings::Exploit::bNoClip;
 
 		if (bNoClip)
 		{
 			if (!wasNoClip)
-				noclipLocation = CameraTransform->GetPosition(); // reliable init position
+				noclipLocation = CameraTransform->GetPosition();
 
 			float speed = 0.5f;
 			if (mem.GetInput()->bIsKeyDown(VK_SHIFT)) speed *= 2.0f;
@@ -94,21 +107,28 @@ void Render::UpdateCamera(uint64_t a1)
 			if (mem.IsValidPtr(ClosestNPC) &&
 				mem.GetInput()->bIsKeyDown(VK_RBUTTON))
 			{
+				Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
+				Vector2 Head2d = Camera->WorldToScreen(Head3d);
+
 				if (!Settings::Aimbot::bSilentAim) 
 				{
-					Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
 					if (helper::IsVisible(Camera, Head3d)) PlayerCamera->SetLookAt(Head3d, 0);
 				}
 				else
 				{
-					ClosestNPC->GetNPCMovement()->GetCapsuleCollider()->GetTransform()->SetPosition(Camera->Location + Forward * 4.0f);
+					ClosestNPC->GetNPCMovement()->GetCapsuleCollider()->GetTransform()->SetPosition(Camera->Location + Forward * 2.0f);
 				}
 			}
 		}
+
+		if (Settings::Exploit::bSpinBot)
+		{
+			static float yaw = 0.0f;
+			yaw = fmodf(yaw + 10.0f, 360.0f);
+			LocalPlayer->GetAvatar()->GetBodyContainer()->SetRotation(Vector4::Euler({ 0.0f, yaw, 0.0f }));
+		}
 	}
 }
-
-
 
 void Render::UpdateMoney(uint64_t a1)
 {
@@ -136,7 +156,7 @@ void Render::UpdateWeapon(uint64_t a1)
 	{
 		Hooks::OrigUpdateWeapon(a1);
 
-		if (!Settings::Aimbot::bRapidFire) return;
+		if (!Settings::Aimbot::bRapidFire || IsPaused) return;
 
 		auto Weapon = (ScheduleOne::Equipping::Equippable_RangedWeapon*)a1;
 		if (!mem.IsValidPtr(Weapon)) return;
@@ -311,11 +331,19 @@ void Render::RenderNPCs()
 
 		if (!NPC->IsVisible()) continue;
 
+		auto Anim = NPC->GetAvatar()->GetAvatarAnimation();
+
 		Vector3 Head3d = NPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
 		if (Head3d.Empty()) continue;
 
 		Vector2 Head2d = Camera->WorldToScreen(Head3d);
 		if (Head2d.Empty()) continue;
+
+		Vector3 Root3d = (NPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(33) + NPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(16)) * 0.5f;
+		if (Root3d.Empty()) continue;
+
+		Vector2 Root2d = Camera->WorldToScreen(Root3d);
+		if (Root2d.Empty()) continue;
 
 		float Health = NPC->GetNPCHealth()->GetHealth();
 		if (Health <= 0) continue;
@@ -347,6 +375,22 @@ void Render::RenderNPCs()
 		if (Settings::Visuals::bChams) NPC->GetAvatar()->SetChams(Shader, Unity::Color{ 1, 0, 0, 1 });
 
 		if (Settings::Visuals::bSkeleton) helper::DrawSkeleton(NPC->GetAvatar()->GetAvatarAnimation(), Camera, Unity::Color(1, 1, 1, 1));
+
+		if (Settings::Visuals::bBox) helper::DrawAvatarBox(Head2d, Root2d, Unity::Color{ 1, 1, 1, 1 });
+
+		if (Settings::Visuals::bName || Settings::Visuals::bDistance)
+		{
+			wchar_t buff[256];
+			const wchar_t* name = Settings::Visuals::bName ? NPC->GetFullName() : L"";
+			if (Settings::Visuals::bName && Settings::Visuals::bDistance)
+				swprintf(buff, sizeof(buff) / sizeof(wchar_t), L"%s [%dm]", name, int(Distance));
+			else if (Settings::Visuals::bName)
+				swprintf(buff, sizeof(buff) / sizeof(wchar_t), L"%s", name);
+			else
+				swprintf(buff, sizeof(buff) / sizeof(wchar_t), L"[%dm]", int(Distance));
+
+			UI::DrawString({ Head2d.x, Head2d.y - 15.f, 0, 0 }, buff, { 255,255,255,255 }, true);
+		}
 	}
 
 	if (mem.IsValidPtr(ClosestNPC) &&

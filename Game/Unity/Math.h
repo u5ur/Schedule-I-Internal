@@ -51,7 +51,7 @@ struct Vector3
 	inline Vector3& operator+=(const Vector3& other) { return *this = *this + other; }
 	inline Vector3& operator-=(const Vector3& other) { return *this = *this - other; }
 
-	inline Vector3 normalized() const
+	inline Vector3 Normalized() const
 	{
 		float len = sqrtf(x * x + y * y + z * z);
 		return { x / len, y / len, z / len };
@@ -97,6 +97,16 @@ struct Vector3
 			(y - vector.y) * (y - vector.y) +
 			(z - vector.z) * (z - vector.z));
 	}
+
+	inline Vector3 Cross(const Vector3& other) const
+	{
+		return {
+			y * other.z - z * other.y,
+			z * other.x - x * other.z,
+			x * other.y - y * other.x
+		};
+	}
+
 };
 
 struct Vector4
@@ -142,6 +152,23 @@ struct Vector4
 		return result;
 	}
 
+	static inline Vector4 Euler(const Vector3& euler)
+	{
+		float cx = cosf(euler.x * 0.5f);
+		float sx = sinf(euler.x * 0.5f);
+		float cy = cosf(euler.y * 0.5f);
+		float sy = sinf(euler.y * 0.5f);
+		float cz = cosf(euler.z * 0.5f);
+		float sz = sinf(euler.z * 0.5f);
+
+		Vector4 q;
+		q.w = cx * cy * cz + sx * sy * sz;
+		q.x = sx * cy * cz - cx * sy * sz;
+		q.y = cx * sy * cz + sx * cy * sz;
+		q.z = cx * cy * sz - sx * sy * cz;
+		return q;
+	}
+
 	static inline Vector4 FromEuler(const Vector3& euler)
 	{
 		float cx = cosf(euler.x * 0.5f);
@@ -156,6 +183,56 @@ struct Vector4
 		q.x = sx * cy * cz - cx * sy * sz;
 		q.y = cx * sy * cz + sx * cy * sz;
 		q.z = cx * cy * sz - sx * sy * cz;
+		return q;
+	}
+
+	static inline Vector4 LookRotation(const Vector3& forward, const Vector3& up)
+	{
+		Vector3 f = forward.Normalized();
+		Vector3 u = up.Normalized();
+		Vector3 r = u.Cross(f).Normalized();
+		u = f.Cross(r);
+
+		float m00 = r.x, m01 = u.x, m02 = f.x;
+		float m10 = r.y, m11 = u.y, m12 = f.y;
+		float m20 = r.z, m21 = u.z, m22 = f.z;
+
+		float trace = m00 + m11 + m22;
+		Vector4 q;
+
+		if (trace > 0.0f)
+		{
+			float s = sqrtf(trace + 1.0f) * 2.0f;
+			q.w = 0.25f * s;
+			q.x = (m21 - m12) / s;
+			q.y = (m02 - m20) / s;
+			q.z = (m10 - m01) / s;
+		}
+		else if ((m00 > m11) && (m00 > m22))
+		{
+			float s = sqrtf(1.0f + m00 - m11 - m22) * 2.0f;
+			q.w = (m21 - m12) / s;
+			q.x = 0.25f * s;
+			q.y = (m01 + m10) / s;
+			q.z = (m02 + m20) / s;
+		}
+		else if (m11 > m22)
+		{
+			float s = sqrtf(1.0f + m11 - m00 - m22) * 2.0f;
+			q.w = (m02 - m20) / s;
+			q.x = (m01 + m10) / s;
+			q.y = 0.25f * s;
+			q.z = (m12 + m21) / s;
+		}
+		else
+		{
+			float s = sqrtf(1.0f + m22 - m00 - m11) * 2.0f;
+			q.w = (m10 - m01) / s;
+			q.x = (m02 + m20) / s;
+			q.y = (m12 + m21) / s;
+			q.z = 0.25f * s;
+		}
+
 		return q;
 	}
 

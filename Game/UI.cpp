@@ -13,6 +13,93 @@ void Render::UI::DrawLine(Vector2 start, Vector2 end, Unity::Color color)
 	}
 }
 
+void Render::UI::DrawString(Unity::Rect pos, Unity::String text, Unity::Color clr, bool centered, float font_size)
+{
+	auto content = Unity::GUIContent::Temp(&text);
+
+	// Always use top-left alignment (no vertical shifting)
+	Unity::GUISkin::label->SetAlignment(0); // TopLeft
+	Unity::GUISkin::label->SetFontSize(font_size);
+
+	Vector2 textSize = Unity::GUISkin::label->CalcSize(content);
+
+	Unity::Rect DrawRect;
+	DrawRect.x = centered ? pos.x - (textSize.x / 2.f) : pos.x;
+	DrawRect.y = pos.y;
+	DrawRect.width = textSize.x;
+	DrawRect.height = textSize.y;
+
+	Unity::GUI::SetColor({ 0,0,0,255 });
+	Unity::GUI::Label({ DrawRect.x - 1, DrawRect.y, DrawRect.width, DrawRect.height }, content, Unity::GUISkin::label);
+	Unity::GUI::Label({ DrawRect.x + 1, DrawRect.y, DrawRect.width, DrawRect.height }, content, Unity::GUISkin::label);
+	Unity::GUI::Label({ DrawRect.x, DrawRect.y - 1, DrawRect.width, DrawRect.height }, content, Unity::GUISkin::label);
+	Unity::GUI::Label({ DrawRect.x, DrawRect.y + 1, DrawRect.width, DrawRect.height }, content, Unity::GUISkin::label);
+
+	Unity::GUI::SetColor(clr.GetUnityColor());
+	Unity::GUI::Label({ DrawRect.x, DrawRect.y, DrawRect.width, DrawRect.height }, content, Unity::GUISkin::label);
+}
+
+
+
+
+void Render::UI::DrawRect(Unity::Rect rect, Unity::Color color, float round, float thickness)
+{
+	if (thickness <= 0.0f) return;
+
+	float maxRounding = fmin(rect.width, rect.height) * 0.5f;
+	round = fmin(round, maxRounding);
+
+	float xMin = rect.x;
+	float yMin = rect.y;
+	float xMax = rect.x + rect.width;
+	float yMax = rect.y + rect.height;
+	float x1 = xMin + round;
+	float y1 = yMin + round;
+	float x2 = xMax - round;
+	float y2 = yMax - round;
+
+	const int segments = 64;
+	const float delta = 0.5f * PI / segments;
+
+	Unity::GL::PushMatrix();
+	if (Unity::Material::material->SetPass(0)) {
+		Unity::GL::Begin(1);
+		Unity::GL::GLColor(color);
+
+		Unity::GL::Vertex({ x1, yMin, 0 });
+		Unity::GL::Vertex({ x2, yMin, 0 });
+
+		Unity::GL::Vertex({ xMax, y1, 0 });
+		Unity::GL::Vertex({ xMax, y2, 0 });
+
+		Unity::GL::Vertex({ x2, yMax, 0 });
+		Unity::GL::Vertex({ x1, yMax, 0 });
+
+		Unity::GL::Vertex({ xMin, y2, 0 });
+		Unity::GL::Vertex({ xMin, y1, 0 });
+
+		auto AddCorner = [&](float cx, float cy, float startAngle) {
+			for (int i = 0; i < segments; ++i) {
+				float angle1 = startAngle + i * delta;
+				float angle2 = startAngle + (i + 1) * delta;
+				Unity::GL::Vertex({ cx + round * cosf(angle1), cy + round * sinf(angle1), 0 });
+				Unity::GL::Vertex({ cx + round * cosf(angle2), cy + round * sinf(angle2), 0 });
+			}
+			};
+
+		if (round > 0.0f) {
+			AddCorner(x1, y1, PI);
+			AddCorner(x2, y1, 1.5f * PI);
+			AddCorner(x2, y2, 0.0f);
+			AddCorner(x1, y2, 0.5f * PI);
+		}
+
+		Unity::GL::End();
+	}
+	Unity::GL::PopMatrix();
+}
+
+
 void Render::UI::DrawFilledRect(Unity::Rect rect, Unity::Color color, float round)
 {
 	if (round <= 0.0f) {

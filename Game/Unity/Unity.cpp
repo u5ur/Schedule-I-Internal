@@ -5,6 +5,7 @@ using namespace Unity;
 void Methods::Init() {
 	CalcSize = reinterpret_cast<void(*)(GUIStyle*, GUIContent*, Vector2*)>(mem.Read<uint64_t>(il2cpp::Method("GUIStyle", "Internal_CalcSize_Injected", 2, "", "UnityEngine")));
 	get_mousePosition_Injected = reinterpret_cast<void(*)(Event*, Vector2*)>(mem.Read<uint64_t>(il2cpp::Method("Event", "get_mousePosition_Injected", 2, "", "UnityEngine")));
+    get_delta = reinterpret_cast<Vector2(*)(Event*)>(mem.Read<uint64_t>(il2cpp::Method("Event", "get_delta", 0, "", "UnityEngine")));
 	Box = reinterpret_cast<void(*)(Rect, GUIContent*, GUIStyle*)>(mem.Read<uint64_t>(il2cpp::Method("GUI", "Box", 3, "content", "UnityEngine", 2)));
 	HorizontalSlider = reinterpret_cast<float(*)(Rect, float, float, float)>(mem.Read<uint64_t>(il2cpp::Method("GUI", "HorizontalSlider", 4, "", "UnityEngine", 5)));
 	Button = reinterpret_cast<bool(*)(Rect*, GUIContent*, GUIStyle*)>(mem.Read<uint64_t>(il2cpp::Method("GUI", "Button", 3, "content", "UnityEngine", 2)));
@@ -67,6 +68,9 @@ void Methods::Init() {
 	set_velocity = reinterpret_cast<void(*)(RigidBody*, Vector3)>(mem.Read<uint64_t>(il2cpp::Method("Rigidbody", "set_velocity", 1, "", "UnityEngine")));
 	set_rotation = reinterpret_cast<void(*)(RigidBody*, Vector4)>(mem.Read<uint64_t>(il2cpp::Method("Rigidbody", "set_rotation", 1, "", "UnityEngine")));
 	set_position = reinterpret_cast<void(*)(Transform*, Vector3)>(mem.Read<uint64_t>(il2cpp::Method("Transform", "set_position", 1, "", "UnityEngine")));
+	tset_rotation = reinterpret_cast<void(*)(Transform*, Vector4)>(mem.Read<uint64_t>(il2cpp::Method("Transform", "set_rotation", 1, "", "UnityEngine")));
+	tget_rotation = reinterpret_cast<Vector4(*)(Transform*)>(mem.Read<uint64_t>(il2cpp::Method("Transform", "get_rotation", 0, "", "UnityEngine")));
+	get_eulerAngles = reinterpret_cast<Vector3(*)(Transform*)>(mem.Read<uint64_t>(il2cpp::Method("Transform", "get_eulerAngles", 0, "", "UnityEngine")));
 	LookAt = reinterpret_cast<void(*)(Transform*, Vector3)>(mem.GameAssembly + 0x29D1360);
 	get_rotation = reinterpret_cast<Vector4(*)(RigidBody*)>(mem.Read<uint64_t>(il2cpp::Method("Rigidbody", "get_rotation", 1, "", "UnityEngine")));
 	set_detectCollisions = reinterpret_cast<void(*)(RigidBody*, bool)>(mem.Read<uint64_t>(il2cpp::Method("Rigidbody", "set_detectCollisions", 1, "", "UnityEngine")));
@@ -85,6 +89,8 @@ void Methods::Init() {
 	set_enabled = reinterpret_cast<void(*)(Collider*, bool)>(mem.Read<uint64_t>(il2cpp::Method("Collider", "set_enabled", 1, "", "UnityEngine")));
 	set_radius = reinterpret_cast<void(*)(CapsuleCollider*, float)>(mem.Read<uint64_t>(il2cpp::Method("CapsuleCollider", "set_radius", 1, "", "UnityEngine")));
 	set_center = reinterpret_cast<void(*)(CapsuleCollider*, Vector3)>(mem.Read<uint64_t>(il2cpp::Method("CapsuleCollider", "set_center", 1, "", "UnityEngine")));
+	set_allowOcclusionWhenDynamic = reinterpret_cast<void(*)(Renderer*, bool)>(mem.Read<uint64_t>(il2cpp::Method("Renderer", "set_allowOcclusionWhenDynamic", 1, "", "UnityEngine")));
+	rset_enabled = reinterpret_cast<void(*)(Renderer*, bool)>(mem.Read<uint64_t>(il2cpp::Method("Renderer", "set_enabled", 1, "", "UnityEngine")));
 
 }
 
@@ -188,6 +194,16 @@ Sprite* SpriteRenderer::GetSprite()
 	return Methods::get_sprite(this);
 }
 
+void Renderer::SetEnabled(bool value) {
+	if (!mem.IsValidPtr(this)) return;
+	Methods::rset_enabled(this, value);
+}
+
+void Renderer::SetallowOcclusionWhenDynamic(bool value) {
+	if (!mem.IsValidPtr(this)) return;
+	Methods::set_allowOcclusionWhenDynamic(this, value);
+}
+
 Material* Renderer::GetMaterial() {
 
 	if (!mem.IsValidPtr(this)) return nullptr;
@@ -282,6 +298,16 @@ Vector3 Transform::GetPosition() {
 	return Methods::get_position(this);
 }
 
+void Transform::SetRotation(Vector4 value) {
+	if (!mem.IsValidPtr(this)) return;
+	return Methods::tset_rotation(this, value);
+}
+
+Vector3 Transform::GetEulerAngles() {
+	if (!mem.IsValidPtr(this)) return Vector3::Zero();
+	return Methods::get_eulerAngles(this);
+}
+
 Vector3 Transform::GetForward() {
 	if (!mem.IsValidPtr(this)) return Vector3::Zero();
 	return Methods::get_forward(this);
@@ -305,6 +331,12 @@ void Transform::SetPosition(Vector3 value) {
 void Transform::LookAt(Vector3 value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::LookAt(this, value);
+}
+
+Vector4 Transform::GetRotation()
+{
+	if (!mem.IsValidPtr(this)) return {};
+	return Methods::tget_rotation(this);
 }
 
 void GameObject::InternalCreateGameObject(GameObject* self, String name) {
@@ -503,13 +535,11 @@ void GUI::BeginGroup(Rect* position, GUIContent* content, GUIStyle* style) {
 	Methods::BeginGroup(position, content, style);
 }
 
-void GUI::EndGroup() 
-{
+void GUI::EndGroup()  {
 	Methods::EndGroup();
 }
 
-EventType Event::GetType() 
-{
+EventType Event::GetType()  {
 	if (!mem.IsValidPtr(this)) return EventType::MouseDown;
 	return Methods::get_type(this);
 }
@@ -518,11 +548,14 @@ Event* Event::GetCurrent() {
 	return Methods::get_current();
 }
 
-Vector2 Event::GetMousePosition() 
-{
+Vector2 Event::GetMousePosition()  {
 	if (!mem.IsValidPtr(this)) return {};
-
 	Vector2 Pos = {};
 	Methods::get_mousePosition_Injected(this, &Pos);
 	return Pos;
+}
+
+Vector2 Event::GetDelta() {
+	if (!mem.IsValidPtr(this)) return {};
+	return Methods::get_delta(this);
 }

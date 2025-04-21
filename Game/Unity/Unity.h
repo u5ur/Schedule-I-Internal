@@ -85,12 +85,6 @@ namespace Unity
 		Texture* GetTexture();
 	};
 
-	class Renderer {
-	public:
-		Material* GetMaterial();
-		void SetMaterial(Material* mat);
-	};
-
 	class SpriteRenderer {
 	public:
 		Sprite* GetSprite();
@@ -101,6 +95,14 @@ namespace Unity
 		Transform* GetTransform();
 		Array<uintptr_t>* GetComponentsInChildren(Type* type);
 		Component* GetComponent(Type* type);
+	};
+
+	class Renderer : public Component {
+	public:
+		Material* GetMaterial();
+		void SetMaterial(Material* mat);
+		void SetallowOcclusionWhenDynamic(bool value);
+		void SetEnabled(bool value);
 	};
 
 	class AnimatorControllerParameter
@@ -147,6 +149,9 @@ namespace Unity
 		Vector3 GetUp();
 		Vector3 GetRight();
 		Vector3 GetPosition();
+		Vector3 GetEulerAngles();
+		Vector4 GetRotation();
+		void SetRotation(Vector4 value);
 	};
 
 	class GameObject : public Object {
@@ -251,5 +256,6 @@ namespace Unity
 		EventType GetType();
 		static Event* GetCurrent();
 		Vector2 GetMousePosition();
+		Vector2 GetDelta();
 	};
 }
