@@ -2,6 +2,14 @@
 #include "Settings.h"
 #include "Unity/Unity.h"
 
+namespace Funly
+{
+	namespace SkyStudio
+	{
+		class TimeOfDayController;
+	}
+}
+
 namespace ScheduleOne 
 {
 	namespace PlayerScripts
@@ -48,6 +56,8 @@ namespace ScheduleOne
 		class CardSprite;
 		class CardController;
 	}
+
+
 }
 
 namespace Sdk
@@ -77,6 +87,7 @@ namespace Sdk
 		inline auto AddItemToInventory = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerInventory*, ScheduleOne::ItemFramework::ItemInstance*)>(0);
 		inline auto set_ActiveSkateboard = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard_Equippable*, ScheduleOne::Skating::Skateboard*)>(0);
 		inline auto set_Rider = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard*, ScheduleOne::PlayerScripts::Player*)>(0);
+		inline auto get_instance = reinterpret_cast<Funly::SkyStudio::TimeOfDayController*(*)()>(0);
 
 		static void Init()
 		{
@@ -103,6 +114,7 @@ namespace Sdk
 			AddItemToInventory = reinterpret_cast<void(*)(ScheduleOne::PlayerScripts::PlayerInventory*, ScheduleOne::ItemFramework::ItemInstance*)>(mem.Read<uint64_t>(il2cpp::Method("PlayerInventory", "AddItemToInventory", 1, "", "ScheduleOne.PlayerScripts")));
 			set_ActiveSkateboard = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard_Equippable*, ScheduleOne::Skating::Skateboard*)>(mem.Read<uint64_t>(il2cpp::Method("Skateboard_Equippable", "set_ActiveSkateboard", 1, "", "ScheduleOne.Skating")));
 			set_Rider = reinterpret_cast<void(*)(ScheduleOne::Skating::Skateboard*, ScheduleOne::PlayerScripts::Player*)>(mem.Read<uint64_t>(il2cpp::Method("Skateboard", "set_Rider", 1, "", "ScheduleOne.Skating")));
+			get_instance = reinterpret_cast<Funly::SkyStudio::TimeOfDayController * (*)()>(mem.Read<uint64_t>(il2cpp::Method("TimeOfDayController", "get_instance", 0, "", "Funly.SkyStudio")));
 
 		}
 	}
@@ -848,6 +860,17 @@ namespace ScheduleOne
 			}
 		};
 
+		class NPCMovement
+		{
+		public:
+
+			Unity::CapsuleCollider* GetCapsuleCollider()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<Unity::CapsuleCollider*>(this + 0x150);
+			}
+		};
+
 
 		class NPC
 		{
@@ -893,6 +916,12 @@ namespace ScheduleOne
 			{
 				if (!mem.IsValidPtr(this)) return nullptr;
 				return mem.Read<NPCHealth*>(this + 0x1B8);
+			}
+
+			NPCMovement* GetNPCMovement()
+			{
+				if (!mem.IsValidPtr(this)) return nullptr;
+				return mem.Read<NPCMovement*>(this + 0x168);
 			}
 
 			Relation::NPCRelationData* GetRelationData()
@@ -1300,6 +1329,11 @@ namespace Funly
 		class TimeOfDayController
 		{
 		public:
+
+			static TimeOfDayController* GetTimeOfDayController()
+			{
+				return Sdk::Methods::get_instance();
+			}
 
 			SkyMaterialController* GetSkyMaterialController()
 			{

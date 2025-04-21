@@ -37,6 +37,7 @@ namespace Unity
 	class RigidBody;
 	class CharacterController;
 	class Collider;
+	class CapsuleCollider;
 	class Animator;
 	class AnimationEvent;
 	class AnimationClip;
@@ -181,6 +182,13 @@ namespace Unity
 	public:
 		RigidBody* GetAttachedRigidbody();
 		void SetEnabled(bool value);
+	};
+
+	class CapsuleCollider : public Collider
+	{
+	public:
+		void SetRadius(float value);
+		void SetCenter(Vector3 value);
 	};
 
 	class CharacterController : public Collider

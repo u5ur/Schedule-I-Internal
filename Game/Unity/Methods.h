@@ -82,6 +82,8 @@ namespace Methods
 	inline auto cset_detectCollisions = reinterpret_cast<void(*)(CharacterController*, bool)>(0);
 	inline auto get_attachedRigidbody = reinterpret_cast<RigidBody*(*)(Collider*)>(0);
 	inline auto set_enabled = reinterpret_cast<void(*)(Collider*, bool)>(0);
+	inline auto set_radius = reinterpret_cast<void(*)(CapsuleCollider*, float)>(0);
+	inline auto set_center = reinterpret_cast<void(*)(CapsuleCollider*, Vector3)>(0);
 
 	void Init();
 }

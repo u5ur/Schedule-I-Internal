@@ -83,6 +83,9 @@ void Methods::Init() {
 	Play = reinterpret_cast<void(*)(Animator*, String*, int, float)>(mem.Read<uint64_t>(il2cpp::Method("Animator", "Play", 3, "stateName", "UnityEngine", 1)));
 	get_attachedRigidbody = reinterpret_cast<RigidBody*(*)(Collider*)>(mem.Read<uint64_t>(il2cpp::Method("Collider", "get_attachedRigidbody", 0, "", "UnityEngine")));
 	set_enabled = reinterpret_cast<void(*)(Collider*, bool)>(mem.Read<uint64_t>(il2cpp::Method("Collider", "set_enabled", 1, "", "UnityEngine")));
+	set_radius = reinterpret_cast<void(*)(CapsuleCollider*, float)>(mem.Read<uint64_t>(il2cpp::Method("CapsuleCollider", "set_radius", 1, "", "UnityEngine")));
+	set_center = reinterpret_cast<void(*)(CapsuleCollider*, Vector3)>(mem.Read<uint64_t>(il2cpp::Method("CapsuleCollider", "set_center", 1, "", "UnityEngine")));
+
 }
 
 float Time::GetTime() {
@@ -355,50 +358,52 @@ Vector2 Camera::WorldToScreen(Vector3 world_pos)
 	return Vector2((1920 / 2) * (1.f + x / w), (1080 / 2) * (1.f - y / w));
 }
 
-void Collider::SetEnabled(bool value)
-{
+void Collider::SetEnabled(bool value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_enabled(this, value);
 }
 
-RigidBody* Collider::GetAttachedRigidbody()
-{
+RigidBody* Collider::GetAttachedRigidbody() {
 	if (!mem.IsValidPtr(this)) return nullptr;
 	return Methods::get_attachedRigidbody(this);
 }
 
-void CharacterController::SetDetectCollisions(bool value)
-{
+void CapsuleCollider::SetRadius(float value) {
+	if (!mem.IsValidPtr(this)) return;
+	Methods::set_radius(this, value);
+}
+
+void CapsuleCollider::SetCenter(Vector3 value) {
+	if (!mem.IsValidPtr(this)) return;
+	Methods::set_center(this, value);
+}
+
+void CharacterController::SetDetectCollisions(bool value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::cset_detectCollisions(this, value);
 }
 
-void RigidBody::SetVelocity(Vector3 value)
-{
+void RigidBody::SetVelocity(Vector3 value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_velocity(this, value);
 }
 
-void RigidBody::SetRotation(Vector4 value)
-{
+void RigidBody::SetRotation(Vector4 value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_rotation(this, value);
 }
 
-void RigidBody::SetDetectCollisions(bool value)
-{
+void RigidBody::SetDetectCollisions(bool value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_detectCollisions(this, value);
 }
 
-void RigidBody::SetisKinematic(bool value)
-{
+void RigidBody::SetisKinematic(bool value) {
 	if (!mem.IsValidPtr(this)) return;
 	Methods::set_isKinematic(this, value);
 }
 
-Vector4 RigidBody::GetRotation()
-{
+Vector4 RigidBody::GetRotation() {
 	if (!mem.IsValidPtr(this)) return {};
 	return Methods::get_rotation(this);
 }

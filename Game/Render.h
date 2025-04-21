@@ -39,6 +39,7 @@ namespace Render
 		void SpawnVehicle();
 	}
 
+
 	void UpdateSky(uint64_t a1);
 
 	void UpdateCamera(uint64_t a1);

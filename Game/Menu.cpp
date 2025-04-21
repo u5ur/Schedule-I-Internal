@@ -37,9 +37,11 @@ void Render::RenderMenu()
 
 	if (CurrentTab == 0)
 	{
+		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Rapid Fire", &Settings::Aimbot::bRapidFire);
+		y += 25;
 		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Aimbot", &Settings::Aimbot::bAimbot);
 		y += 25;
-		UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Rapid Fire", &Settings::Aimbot::bRapidFire);
+		if (Settings::Aimbot::bAimbot) UI::Checkbox({ x, y, 20, 20 }, ThemeColor, L"Silent Aim", &Settings::Aimbot::bSilentAim);
 	}
 	else if (CurrentTab == 1)
 	{

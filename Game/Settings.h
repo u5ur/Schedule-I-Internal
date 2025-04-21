@@ -25,6 +25,7 @@ namespace Settings
 	{
 		inline bool bAimbot = true;
 		inline bool bRapidFire = true;
+		inline bool bSilentAim = true;
 	}
 
 	namespace Visuals

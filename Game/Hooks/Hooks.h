@@ -80,4 +80,12 @@ namespace Hooks
 		OrigUpdateVehicle = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("LandVehicle", "Update", 0, "", "ScheduleOne.Vehicles")));
 		hook->HookCPP(func, ("Update"), ("LandVehicle"), ("ScheduleOne.Vehicles"), 0);
 	}
+
+	inline void (*OrigUpdateNPC)(uint64_t);
+
+	static void InitUpdateNPC(void* func)
+	{
+		OrigUpdateNPC = reinterpret_cast<void(*)(uint64_t)>(mem.Read<uint64_t>(il2cpp::Method("NPC", "Update", 0, "", "ScheduleOne.NPCs")));
+		hook->HookCPP(func, ("Update"), ("NPC"), ("ScheduleOne.NPCs"), 0);
+	}
 }

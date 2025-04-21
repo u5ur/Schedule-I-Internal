@@ -94,8 +94,15 @@ void Render::UpdateCamera(uint64_t a1)
 			if (mem.IsValidPtr(ClosestNPC) &&
 				mem.GetInput()->bIsKeyDown(VK_RBUTTON))
 			{
-				Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
-				PlayerCamera->SetLookAt(Head3d, 0);
+				if (!Settings::Aimbot::bSilentAim) 
+				{
+					Vector3 Head3d = ClosestNPC->GetAvatar()->GetAvatarAnimation()->GetBonePos(0);
+					if (helper::IsVisible(Camera, Head3d)) PlayerCamera->SetLookAt(Head3d, 0);
+				}
+				else
+				{
+					ClosestNPC->GetNPCMovement()->GetCapsuleCollider()->GetTransform()->SetPosition(Camera->Location + Forward * 4.0f);
+				}
 			}
 		}
 	}
@@ -326,7 +333,6 @@ void Render::RenderNPCs()
 		float ScreenDist = std::sqrt(dx * dx + dy * dy);
 
 		if (ScreenDist <= 100 &&
-			helper::IsVisible(Camera, Head3d) &&
 			ScreenDist < MinScreenDistanceNpc)
 		{
 			MinScreenDistanceNpc = ScreenDist;
